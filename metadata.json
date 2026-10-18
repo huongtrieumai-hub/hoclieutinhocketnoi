@@ -1,0 +1,6 @@
+{
+  "name": "Học Liệu Tin Học Kết Nối Tri Thức 3-4-5",
+  "description": "Thư viện bài giảng số, sơ đồ tư duy tương tác, mô phỏng thực hành, trò chơi đánh giá và trợ lý Robot Tin học dành cho học sinh lớp 3, 4, 5.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

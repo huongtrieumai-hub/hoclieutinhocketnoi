@@ -1,0 +1,139 @@
+{
+  "entities": {
+    "Lesson": {
+      "title": "Lesson",
+      "description": "Bài giảng Tin học tiểu học theo bộ sách Kết nối tri thức",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã định danh duy nhất của bài học" },
+        "grade": { "type": "number", "description": "Khối lớp (3, 4, 5)" },
+        "topicId": { "type": "string", "description": "Mã chủ đề SGK tương ứng" },
+        "title": { "type": "string", "description": "Tên bài giảng" },
+        "order": { "type": "number", "description": "Thứ tự sắp xếp bài giảng" },
+        "description": { "type": "string", "description": "Mô tả ngắn về bài giảng" },
+        "requiredWatchSeconds": { "type": "number", "description": "Thời lượng xem video/học liệu tối thiểu quy định (giây)" }
+      },
+      "required": ["id", "grade", "topicId", "title"]
+    },
+    "Topic": {
+      "title": "Topic",
+      "description": "Chủ đề học tập môn Tin học theo SGK",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã chủ đề" },
+        "name": { "type": "string", "description": "Tên chủ đề" },
+        "grade": { "type": "number", "description": "Khối lớp" },
+        "icon": { "type": "string", "description": "Biểu tượng minh họa chủ đề" },
+        "color": { "type": "string", "description": "Màu sắc giao diện nhận diện chủ đề" }
+      },
+      "required": ["id", "name", "grade"]
+    },
+    "StudySession": {
+      "title": "StudySession",
+      "description": "Nhật ký phiên học trực tuyến của học sinh",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã phiên học" },
+        "userId": { "type": "string", "description": "Mã học sinh" },
+        "studentName": { "type": "string", "description": "Họ tên học sinh" },
+        "schoolClass": { "type": "string", "description": "Lớp học" },
+        "grade": { "type": "number", "description": "Khối lớp" },
+        "lessonId": { "type": "string", "description": "Mã bài học đã theo dõi" },
+        "lessonTitle": { "type": "string", "description": "Tên bài học" },
+        "durationSeconds": { "type": "number", "description": "Tổng số giây học tập" },
+        "isCompleted": { "type": "boolean", "description": "Trạng thái hoàn thành bài" },
+        "date": { "type": "string", "description": "Ngày ghi nhận phiên học" }
+      },
+      "required": ["id", "lessonId", "studentName"]
+    },
+    "ScoreRecord": {
+      "title": "ScoreRecord",
+      "description": "Bản ghi điểm số bài kiểm tra trắc nghiệm của học sinh",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã bản ghi điểm" },
+        "lessonId": { "type": "string", "description": "Mã bài học" },
+        "studentName": { "type": "string", "description": "Tên học sinh" },
+        "schoolClass": { "type": "string", "description": "Lớp học" },
+        "score": { "type": "number", "description": "Số câu trả lời đúng" },
+        "totalQuestions": { "type": "number", "description": "Tổng số câu hỏi" },
+        "percentage": { "type": "number", "description": "Tỷ lệ phần trăm điểm đạt được" },
+        "completedAt": { "type": "string", "description": "Thời điểm hoàn thành" }
+      },
+      "required": ["id", "lessonId", "studentName", "score"]
+    },
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "Tiến độ học tập và thành tích sao vàng của học sinh",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Mã tài khoản học sinh" },
+        "starsEarned": { "type": "number", "description": "Tổng số sao vàng tích lũy" }
+      },
+      "required": ["userId", "starsEarned"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Hồ sơ tài khoản người dùng trong hệ thống học liệu",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã người dùng" },
+        "username": { "type": "string", "description": "Tên đăng nhập" },
+        "fullName": { "type": "string", "description": "Họ và tên" },
+        "role": { "type": "string", "description": "Vai trò (student, teacher, admin)" },
+        "avatar": { "type": "string", "description": "Biểu tượng đại diện" },
+        "stars": { "type": "number", "description": "Số sao tích lũy" },
+        "schoolClass": { "type": "string", "description": "Lớp học" },
+        "grade": { "type": "number", "description": "Khối lớp" },
+        "status": { "type": "string", "description": "Trạng thái tài khoản: active, pending, locked" },
+        "createdAt": { "type": "string", "description": "Thời điểm tạo tài khoản" },
+        "passwordHash": { "type": "string", "description": "Mã băm bảo mật mật khẩu SHA-256" },
+        "salt": { "type": "string", "description": "Khóa muối băm mật khẩu" }
+      },
+      "required": ["id", "username", "fullName", "role"]
+    },
+    "SchoolClass": {
+      "title": "SchoolClass",
+      "description": "Danh mục lớp học do giáo viên quản trị tạo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mã định danh lớp học" },
+        "name": { "type": "string", "description": "Tên lớp, ví dụ 3A, 4B, 5C" },
+        "grade": { "type": "number", "description": "Khối lớp (3, 4, 5)" },
+        "teacherName": { "type": "string", "description": "Tên giáo viên phụ trách" },
+        "createdAt": { "type": "string", "description": "Ngày tạo lớp" }
+      },
+      "required": ["id", "name", "grade"]
+    }
+  },
+  "firestore": {
+    "/lessons/{lessonId}": {
+      "schema": { "$ref": "#/entities/Lesson" },
+      "description": "Lưu trữ thông tin bài giảng Tin học"
+    },
+    "/topics/{topicId}": {
+      "schema": { "$ref": "#/entities/Topic" },
+      "description": "Lưu trữ danh mục các chủ đề bài học theo SGK"
+    },
+    "/studySessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/StudySession" },
+      "description": "Lưu trữ phiên theo dõi và thời gian học của học sinh"
+    },
+    "/scores/{scoreId}": {
+      "schema": { "$ref": "#/entities/ScoreRecord" },
+      "description": "Lưu trữ kết quả làm bài trắc nghiệm của học sinh"
+    },
+    "/userProgress/{userId}": {
+      "schema": { "$ref": "#/entities/UserProgress" },
+      "description": "Lưu trữ tiến độ bài học và số sao tích lũy của học sinh"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Lưu trữ hồ sơ tài khoản học sinh, giáo viên, quản trị viên"
+    },
+    "/classes/{classId}": {
+      "schema": { "$ref": "#/entities/SchoolClass" },
+      "description": "Lưu trữ danh sách lớp học do giáo viên quản lý"
+    }
+  }
+}

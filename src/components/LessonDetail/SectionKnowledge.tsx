@@ -1,0 +1,160 @@
+import React, { useState } from 'react';
+import { KnowledgeCard } from '../../types';
+import { BookOpen, Volume2, Sparkles, FileText, Video, ExternalLink } from 'lucide-react';
+
+interface Props {
+  cards: KnowledgeCard[];
+  objectives?: string[];
+}
+
+export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
+  const [activeSpeechId, setActiveSpeechId] = useState<string | null>(null);
+
+  const speakCard = (id: string, text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      if (activeSpeechId === id) {
+        setActiveSpeechId(null);
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'vi-VN';
+      utterance.rate = 0.9;
+      utterance.onstart = () => setActiveSpeechId(id);
+      utterance.onend = () => setActiveSpeechId(null);
+      utterance.onerror = () => setActiveSpeechId(null);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-3xl text-white shadow-xl flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner backdrop-blur-xs">
+            🎯
+          </div>
+          <div>
+            <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider">
+              MỤC TIÊU &amp; KIẾN THỨC TRỌNG TÂM
+            </span>
+            <h3 className="text-2xl font-black mt-1">Kiến Thức Trọng Tâm Bài Học</h3>
+          </div>
+        </div>
+      </div>
+
+      {/* Objectives Banner if present */}
+      {objectives && objectives.length > 0 && (
+        <div className="bg-amber-50/80 border-2 border-amber-200 rounded-3xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-7 h-7 rounded-xl bg-amber-400 text-amber-950 flex items-center justify-center text-sm font-black shadow-xs">
+              🎯
+            </span>
+            <h4 className="text-base font-black text-amber-950">Mục Tiêu Bài Học</h4>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            {objectives.map((obj, i) => (
+              <div key={i} className="flex items-start gap-2 bg-white/90 p-3 rounded-2xl border border-amber-100 shadow-2xs">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <span className="text-xs font-bold text-slate-800 leading-relaxed">{obj}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Cards List */}
+      <div className="grid grid-cols-1 gap-6">
+        {cards.map((card, idx) => (
+          <div
+            key={card.id || idx}
+            className="bg-white rounded-3xl border-3 border-blue-100 hover:border-blue-300 shadow-md hover:shadow-xl transition-all overflow-hidden"
+          >
+            <div className="p-6 md:p-8">
+              {/* Card Title & Speech Button */}
+              <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center shadow-xs">
+                    {idx + 1}
+                  </span>
+                  <h4 className="text-xl font-black text-slate-800">{card.title}</h4>
+                </div>
+
+                <button
+                  onClick={() => speakCard(card.id, `${card.title}. ${card.details || card.summary}. Ghi nhớ: ${card.keyMemory}`)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs ${
+                    activeSpeechId === card.id
+                      ? 'bg-rose-500 text-white animate-pulse'
+                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                  }`}
+                >
+                  <Volume2 className="w-4 h-4" />
+                  <span>{activeSpeechId === card.id ? 'Đang đọc...' : 'Đọc bài này 📢'}</span>
+                </button>
+              </div>
+
+              {/* Knowledge Details & Image grid */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 my-6 items-center">
+                <div className={card.imageUrl ? 'md:col-span-7' : 'md:col-span-12'}>
+                  <p className="text-base text-slate-700 font-bold leading-relaxed">
+                    {card.details || card.summary}
+                  </p>
+                </div>
+
+                {card.imageUrl && (
+                  <div className="md:col-span-5">
+                    <img
+                      src={card.imageUrl}
+                      alt={card.title}
+                      className="w-full h-48 md:h-56 object-cover rounded-2xl border-2 border-slate-100 shadow-md hover:scale-103 transition-transform"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Key Takeaway Badge (Ghi nhớ nhanh) */}
+              {card.keyMemory && (
+                <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-100 rounded-2xl border-2 border-amber-300 flex items-center gap-3 text-amber-900 font-black text-sm shadow-xs">
+                  <Sparkles className="w-6 h-6 text-amber-500 shrink-0 animate-bounce" />
+                  <span>
+                    <strong className="text-amber-800 uppercase tracking-wide mr-1">🌟 Ghi nhớ nhanh:</strong>{' '}
+                    {card.keyMemory}
+                  </span>
+                </div>
+              )}
+
+              {/* Attachments if any (PDF, Video link) */}
+              {(card.pdfUrl || card.videoUrl) && (
+                <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-3">
+                  {card.pdfUrl && (
+                    <a
+                      href={card.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-xl text-xs font-bold transition"
+                    >
+                      <FileText className="w-4 h-4" /> Xem tài liệu PDF đính kèm
+                    </a>
+                  )}
+                  {card.videoUrl && (
+                    <a
+                      href={card.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-xl text-xs font-bold transition"
+                    >
+                      <Video className="w-4 h-4" /> Xem video học liệu
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

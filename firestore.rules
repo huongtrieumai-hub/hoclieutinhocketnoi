@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Custom Claims or Verified Admin Email check for Admin: verified by Firebase Authentication token
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'admin' ||
+        request.auth.token.email == 'maihuong2531990@gmail.com' ||
+        request.auth.token.email == 'huong.trieumai@gmail.com'
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Health-check / test document
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // Lessons - Public read for all students, update/delete strictly ONLY for Admin
+    match /lessons/{lessonId} {
+      allow read: if true;
+      allow create: if (isAdmin() || !exists(/databases/$(database)/documents/lessons/$(lessonId))) && isValidId(lessonId);
+      allow update, delete: if isAdmin() && isValidId(lessonId);
+    }
+
+    // Topics - Public read for all, update/delete strictly ONLY for Admin
+    match /topics/{topicId} {
+      allow read: if true;
+      allow create: if (isAdmin() || !exists(/databases/$(database)/documents/topics/$(topicId))) && isValidId(topicId);
+      allow update, delete: if isAdmin() && isValidId(topicId);
+    }
+
+    // Study sessions - Log student learning time
+    // Students can read/create their sessions; Admin can view all and manage
+    match /studySessions/{sessionId} {
+      allow read: if true;
+      allow create: if isValidId(sessionId);
+      allow update, delete: if isAdmin() && isValidId(sessionId);
+    }
+
+    // Quiz scores - Record quiz results
+    // Students can read and create their own scores; Admin can view all
+    match /scores/{scoreId} {
+      allow read: if true;
+      allow create: if isValidId(scoreId);
+      allow update, delete: if isAdmin() && isValidId(scoreId);
+    }
+
+    // User progress and stars
+    match /userProgress/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId);
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // Users profile collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId);
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // Classes collection
+    match /classes/{classId} {
+      allow read: if true;
+      allow write: if isValidId(classId);
+    }
+  }
+}
+
