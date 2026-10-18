@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
@@ -75,4 +75,23 @@ export async function testConnection(): Promise<boolean> {
     }
     return false;
   }
+}
+
+// Helper to create Firebase Auth user without disrupting Admin session
+export async function createFirebaseAuthUserByAdmin(emailInput: string, passwordInput: string): Promise<string> {
+  const secondaryAppName = 'SecondaryAdminProvisionerApp';
+  let secondaryApp;
+  const existingApps = getApps();
+  const found = existingApps.find((a) => a.name === secondaryAppName);
+  if (found) {
+    secondaryApp = found;
+  } else {
+    secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+  }
+
+  const secondaryAuth = getAuth(secondaryApp);
+  const cred = await createUserWithEmailAndPassword(secondaryAuth, emailInput, passwordInput);
+  const uid = cred.user.uid;
+  await signOut(secondaryAuth);
+  return uid;
 }

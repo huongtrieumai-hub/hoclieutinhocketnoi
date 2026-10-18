@@ -16,6 +16,7 @@ import { SectionAIAssistant } from './components/LessonDetail/SectionAIAssistant
 import { LoginModal } from './components/Auth/LoginModal';
 import { UserProfileModal } from './components/Auth/UserProfileModal';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
+import { BottomNavigation } from './components/BottomNavigation';
 import { StarShowerCelebrationModal } from './components/Celebration/StarShowerCelebrationModal';
 import { triggerStarShower } from './utils/starShower';
 import { FirestoreService } from './services/firestoreService';
@@ -461,7 +462,7 @@ export default function App() {
       />
 
       {/* Main Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 sm:pb-32">
         {/* VIEW 1: LESSON DETAIL VIEW */}
         {activeLesson ? (
           <div className="space-y-6">
@@ -613,87 +614,6 @@ export default function App() {
               {/* Decorative 3D Mascot */}
               <div className="absolute -right-6 -bottom-8 text-9xl opacity-30 sm:opacity-50 select-none pointer-events-none">
                 🤖
-              </div>
-            </div>
-
-            {/* Quick Demo Accounts Fast Strip */}
-            <div className="bg-white p-5 rounded-3xl border-2 border-amber-200 shadow-sm space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg">
-                    ⚡
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-800">
-                      Tài Khoản Demo Sẵn (Nhấn 1 Chạm Để Trải Nghiệm Thử):
-                    </h3>
-                    <p className="text-[11px] text-slate-500 font-semibold">
-                      Đăng nhập nhanh không cần gõ mật khẩu - Phù hợp trình chiếu &amp; học thử!
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsLoginModalOpen(true)}
-                  className="text-xs font-black text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Xem bảng đăng nhập đầy đủ</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Demo Account Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
-                {DEMO_ACCOUNTS.map((acc) => {
-                  const isCurrent = currentUser?.username === acc.username;
-                  return (
-                    <button
-                      key={acc.id}
-                      onClick={() => handleQuickDemoCard(acc)}
-                      className={`p-3 rounded-2xl border-2 text-left transition-all flex flex-col justify-between group cursor-pointer ${
-                        isCurrent
-                          ? 'bg-amber-100 border-amber-400 ring-2 ring-amber-300 shadow-md scale-102'
-                          : 'bg-slate-50 hover:bg-amber-50/60 border-slate-200 hover:border-amber-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-2xl">{acc.avatar}</span>
-                        {acc.schoolClass && (
-                          <span className="text-[10px] bg-blue-100 text-blue-700 font-black px-1.5 py-0.5 rounded-md">
-                            Lớp {acc.schoolClass}
-                          </span>
-                        )}
-                        {acc.role === 'teacher' && (
-                          <span className="text-[10px] bg-purple-100 text-purple-700 font-black px-1.5 py-0.5 rounded-md">
-                            Giáo viên
-                          </span>
-                        )}
-                        {acc.role === 'admin' && (
-                          <span className="text-[10px] bg-rose-100 text-rose-700 font-black px-1.5 py-0.5 rounded-md">
-                            Admin
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="font-black text-xs text-slate-800 truncate">
-                        {acc.fullName}
-                      </div>
-                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                        {acc.username}
-                      </div>
-
-                      <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] font-bold">
-                        <span className={isCurrent ? 'text-amber-800 font-black' : 'text-slate-400'}>
-                          {isCurrent ? '✓ Đang dùng' : 'Nhấn vào →'}
-                        </span>
-                        <span className="text-amber-600 font-extrabold flex items-center gap-0.5">
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
-                          {acc.stars}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
               </div>
             </div>
 
@@ -940,6 +860,31 @@ export default function App() {
             ? handleGoToNextLesson
             : undefined
         }
+      />
+
+      {/* Footer / Bottom Navigation Menu Bar for multi-device compatibility */}
+      <BottomNavigation
+        selectedGrade={selectedGrade}
+        onSelectGrade={setSelectedGrade}
+        currentUser={currentUser}
+        onGoHome={handleBackToHome}
+        onOpenLogin={() => {
+          setLoginModalRole('student');
+          setIsLoginModalOpen(true);
+        }}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
+        onOpenAdmin={() => {
+          if (currentUser && (currentUser.role === 'teacher' || currentUser.role === 'admin')) {
+            setIsLoggedInAdmin(true);
+          } else {
+            setLoginModalRole('teacher');
+            setIsLoginModalOpen(true);
+          }
+        }}
+        starsEarned={progress.starsEarned}
+        activeLesson={activeLesson}
+        onSelectSection={handleSelectSection}
+        isLoggedInAdmin={isLoggedInAdmin}
       />
     </div>
   );

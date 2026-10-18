@@ -1,5 +1,5 @@
 import { UserAccount, GradeLevel } from '../types';
-import { auth, db, handleFirestoreError, OperationType } from '../firebase';
+import { auth, db, createFirebaseAuthUserByAdmin, handleFirestoreError, OperationType } from '../firebase';
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -183,6 +183,9 @@ export const AuthService = {
 
   // Get all accounts (local fallback + sync)
   getAllAccounts(): UserAccount[] {
+    if (typeof localStorage === 'undefined') {
+      return DEMO_ACCOUNTS;
+    }
     try {
       const data = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
       if (data) {
@@ -202,7 +205,9 @@ export const AuthService = {
     } catch (e) {
       console.error('Error reading accounts from storage:', e);
     }
-    localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(DEMO_ACCOUNTS));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(DEMO_ACCOUNTS));
+    }
     return DEMO_ACCOUNTS;
   },
 
@@ -216,17 +221,19 @@ export const AuthService = {
     }
 
     // Also update local storage
-    try {
-      const currentList = this.getAllAccounts();
-      const index = currentList.findIndex((u) => u.id === sanitized.id);
-      if (index >= 0) {
-        currentList[index] = { ...currentList[index], ...sanitized };
-      } else {
-        currentList.push(sanitized);
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const currentList = this.getAllAccounts();
+        const index = currentList.findIndex((u) => u.id === sanitized.id);
+        if (index >= 0) {
+          currentList[index] = { ...currentList[index], ...sanitized };
+        } else {
+          currentList.push(sanitized);
+        }
+        localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(currentList));
+      } catch (e) {
+        console.warn('Local accounts sync error:', e);
       }
-      localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(currentList));
-    } catch (e) {
-      console.warn('Local accounts sync error:', e);
     }
   },
 
@@ -239,13 +246,15 @@ export const AuthService = {
         // Combine with default demo accounts if not already present
         const combined = [...firestoreUsers];
         for (const demo of DEMO_ACCOUNTS) {
-          if (!combined.some((u) => u.username.toLowerCase() === demo.username.toLowerCase())) {
+          if (!combined.some((u) => u.username && u.username.toLowerCase() === demo.username.toLowerCase())) {
             combined.push(demo);
             // Sync missing demo to Firestore
             setDoc(doc(db, 'users', demo.id), demo).catch(console.error);
           }
         }
-        localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(combined));
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(combined));
+        }
         return combined;
       }
     } catch (e) {
@@ -534,20 +543,41 @@ export const AuthService = {
 
     // Check duplicate username across remote and local
     const accounts = await this.fetchAllAccounts();
-    if (accounts.some((a) => a.username.toLowerCase() === cleanUsername)) {
+    if (accounts.some((a) => a.username && a.username.toLowerCase() === cleanUsername)) {
       return {
         success: false,
         message: `Tên đăng nhập "${cleanUsername}" đã có bạn khác sử dụng! Em vui lòng chọn tên đăng nhập khác nhé.`,
       };
     }
 
-    // Hash password securely with fresh salt
+    // 1. Construct valid email for Firebase Authentication
+    const constructedEmail = cleanUsername.includes('@')
+      ? cleanUsername
+      : `${cleanUsername}@hoclieu.edu.vn`;
+
+    // 2. Provision user in Firebase Authentication (without disrupting current Admin session)
+    let createdUid = `usr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      createdUid = await createFirebaseAuthUserByAdmin(constructedEmail, accountData.password.trim());
+      console.log('[Firebase Auth] Successfully provisioned Auth user:', constructedEmail, 'UID:', createdUid);
+    } catch (authErr: any) {
+      console.warn('[Firebase Auth] Notice during Auth user provision:', authErr?.message || authErr);
+      if (authErr?.code === 'auth/email-already-in-use') {
+        return {
+          success: false,
+          message: `Email hoặc Tên đăng nhập "${cleanUsername}" đã tồn tại trong Firebase Auth! Vui lòng chọn tên khác.`,
+        };
+      }
+    }
+
+    // 3. Hash password securely with fresh salt
     const salt = `salt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const passwordHash = await hashPassword(accountData.password.trim(), salt);
 
     const newAcc: UserAccount = {
-      id: `usr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      id: createdUid,
       username: cleanUsername,
+      email: constructedEmail,
       passwordHash,
       salt,
       fullName: accountData.fullName.trim(),
@@ -559,6 +589,10 @@ export const AuthService = {
       badges: ['Tân binh chăm chỉ', 'Kết nối tri thức'],
       status: autoActivate ? 'active' : 'pending',
       createdAt: new Date().toISOString().split('T')[0],
+      customClaims: {
+        admin: false,
+        role: 'student',
+      },
     };
 
     // Save to Firestore and local
