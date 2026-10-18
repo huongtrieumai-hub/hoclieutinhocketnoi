@@ -19,7 +19,8 @@ import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { StarShowerCelebrationModal } from './components/Celebration/StarShowerCelebrationModal';
 import { triggerStarShower } from './utils/starShower';
 import { FirestoreService } from './services/firestoreService';
-import { testConnection } from './firebase';
+import { testConnection, db } from './firebase';
+import { getDoc, doc } from 'firebase/firestore';
 import {
   Sparkles,
   BookOpen,
@@ -351,13 +352,25 @@ export default function App() {
   };
 
   // Login handler
-  const handleLoginSuccess = (user: UserAccount) => {
-    setCurrentUser(user);
-    if (user.grade) {
-      setSelectedGrade(user.grade);
+  const handleLoginSuccess = async (user: UserAccount) => {
+    let activeUser = user;
+    try {
+      const snap = await getDoc(doc(db, 'users', user.id));
+      if (snap.exists()) {
+        activeUser = snap.data() as UserAccount;
+      }
+    } catch (e) {
+      console.warn('[Firestore] Could not load user directly from Firestore:', e);
+    }
+
+    setCurrentUser(activeUser);
+    AuthService.setCurrentUser(activeUser);
+
+    if (activeUser.grade) {
+      setSelectedGrade(activeUser.grade);
     }
     // Load student's own progress from Firestore
-    FirestoreService.getUserProgress(user.id)
+    FirestoreService.getUserProgress(activeUser.id)
       .then((saved) => {
         if (saved) {
           setProgress(saved);
@@ -365,7 +378,7 @@ export default function App() {
       })
       .catch(console.warn);
 
-    if (user.role === 'teacher' || user.role === 'admin') {
+    if (activeUser.role === 'teacher' || activeUser.role === 'admin') {
       setIsLoggedInAdmin(true);
     }
   };

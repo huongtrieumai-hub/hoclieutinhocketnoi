@@ -368,8 +368,20 @@ export const AuthService = {
 
       // Save sanitized user profile to Firestore (never saves password in Firestore)
       await setDoc(doc(db, 'users', fbUser.uid), newAccount);
-      this.setCurrentUser(newAccount);
-      return { success: true, user: newAccount };
+
+      // Re-fetch confirmed profile directly from Firestore users collection
+      let syncedUser = newAccount;
+      try {
+        const snap = await getDoc(doc(db, 'users', fbUser.uid));
+        if (snap.exists()) {
+          syncedUser = snap.data() as UserAccount;
+        }
+      } catch (e) {
+        console.warn('[Firestore] Profile re-fetch notice:', e);
+      }
+
+      this.setCurrentUser(syncedUser);
+      return { success: true, user: syncedUser };
     } catch (err: unknown) {
       console.error('[Firebase Auth] registerWithEmail error:', err);
       const code = (err as { code?: string })?.code;
@@ -552,12 +564,25 @@ export const AuthService = {
     // Save to Firestore and local
     await this.saveAccountToFirestore(newAcc);
 
+    // Re-fetch confirmed record directly from Firestore users collection
+    let syncedUser = newAcc;
+    try {
+      const snap = await getDoc(doc(db, 'users', newAcc.id));
+      if (snap.exists()) {
+        syncedUser = snap.data() as UserAccount;
+      }
+    } catch (e) {
+      console.warn('[Firestore] User re-fetch notice:', e);
+    }
+
+    this.setCurrentUser(syncedUser);
+
     return {
       success: true,
       message: autoActivate
         ? 'Chúc mừng! Em đã tạo tài khoản thành công.'
         : 'Chúc mừng! Em đã đăng ký tài khoản thành công. Tài khoản sẽ sớm được Thầy/Cô kích hoạt!',
-      user: newAcc,
+      user: syncedUser,
     };
   },
 
@@ -618,6 +643,41 @@ export const AuthService = {
     } catch (e) {
       console.error('Status update error:', e);
       return { success: false, message: 'Lỗi khi cập nhật trạng thái tài khoản.' };
+    }
+  },
+
+  // Update full account details (Admin edit operation)
+  async updateAccount(
+    userId: string,
+    updates: Partial<UserAccount>
+  ): Promise<{ success: boolean; message: string; user?: UserAccount }> {
+    try {
+      const accounts = await this.fetchAllAccounts();
+      const userIndex = accounts.findIndex((a) => a.id === userId);
+      if (userIndex < 0) {
+        return { success: false, message: 'Không tìm thấy tài khoản để cập nhật!' };
+      }
+
+      const existing = accounts[userIndex];
+      const updated: UserAccount = {
+        ...existing,
+        ...updates,
+      };
+
+      // Clean password fields
+      delete updated.password;
+
+      // Save to Firestore and local storage
+      await this.saveAccountToFirestore(updated);
+
+      return {
+        success: true,
+        message: `Đã cập nhật thành công thông tin tài khoản "${updated.fullName}"!`,
+        user: updated,
+      };
+    } catch (e) {
+      console.error('Update account error:', e);
+      return { success: false, message: 'Lỗi khi cập nhật thông tin tài khoản.' };
     }
   },
 

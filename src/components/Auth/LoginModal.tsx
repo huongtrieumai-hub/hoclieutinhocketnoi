@@ -473,34 +473,6 @@ export const LoginModal: React.FC<Props> = ({
               <span>{isGoogleLoading ? 'Đang mở liên kết Google...' : 'Đăng nhập với Google Account'}</span>
             </button>
 
-            {/* DEMO ACCOUNTS QUICK LOGIN CARDS */}
-            <div className="pt-2 border-t border-slate-100">
-              <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block mb-2">
-                ⚡ TÀI KHOẢN MẪU DÀNH CHO THỬ NGHIỆM:
-              </span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {DEMO_ACCOUNTS.map((acc) => (
-                  <button
-                    key={acc.id}
-                    type="button"
-                    onClick={() => handleQuickDemoClick(acc)}
-                    className="p-2.5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-300 rounded-2xl text-left transition flex items-center gap-2 cursor-pointer group"
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-white shadow-2xs flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition">
-                      {acc.avatar}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-black text-slate-800 truncate group-hover:text-amber-800">
-                        {acc.fullName}
-                      </div>
-                      <div className="text-[10px] text-slate-500 font-bold truncate">
-                        @{acc.username}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 

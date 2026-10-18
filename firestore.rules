@@ -68,9 +68,15 @@ service cloud.firestore {
     }
 
     // Users profile collection
+    // Enforce that all self-registered new accounts must strictly be 'student'
     match /users/{userId} {
       allow read: if true;
-      allow create, update: if isValidId(userId);
+      allow create: if isValidId(userId)
+        && (!('role' in request.resource.data) || request.resource.data.role == 'student' || isAdmin());
+      allow update: if isValidId(userId) && (
+        isAdmin() ||
+        (isOwner(userId) && (!('role' in request.resource.data) || request.resource.data.role == resource.data.role))
+      );
       allow delete: if isAdmin() && isValidId(userId);
     }
 

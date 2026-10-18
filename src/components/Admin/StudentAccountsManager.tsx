@@ -24,6 +24,7 @@ import {
   Clock,
   Check,
   X,
+  Pencil,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -49,6 +50,16 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
   const [isClaimsGuideOpen, setIsClaimsGuideOpen] = useState(false);
   const [resetPasswordTarget, setResetPasswordTarget] = useState<UserAccount | null>(null);
   const [newPasswordValue, setNewPasswordValue] = useState('123456');
+
+  // Edit account modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editTargetUser, setEditTargetUser] = useState<UserAccount | null>(null);
+  const [editFullName, setEditFullName] = useState('');
+  const [editGrade, setEditGrade] = useState<GradeLevel>(3);
+  const [editClass, setEditClass] = useState('3A');
+  const [editRole, setEditRole] = useState<'student' | 'teacher' | 'admin'>('student');
+  const [editStatus, setEditStatus] = useState<'active' | 'pending' | 'locked'>('active');
+  const [editAvatar, setEditAvatar] = useState('👦');
 
   // New account form
   const [newFullName, setNewFullName] = useState('');
@@ -183,6 +194,45 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
     const res = await AuthService.deleteAccount(user.id);
     if (res.success) {
       showNotification('success', res.message);
+      refreshData();
+    } else {
+      showNotification('error', res.message);
+    }
+  };
+
+  const handleOpenEditModal = (user: UserAccount) => {
+    setEditTargetUser(user);
+    setEditFullName(user.fullName || '');
+    setEditGrade(user.grade || 3);
+    setEditClass(user.schoolClass || '3A');
+    setEditRole(user.role || 'student');
+    setEditStatus(user.status || 'active');
+    setEditAvatar(user.avatar || '👦');
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEditUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTargetUser) return;
+    if (!editFullName.trim()) {
+      showNotification('error', 'Họ và tên không được để trống!');
+      return;
+    }
+
+    const updates: Partial<UserAccount> = {
+      fullName: editFullName.trim(),
+      grade: editGrade,
+      schoolClass: editClass,
+      role: editRole,
+      status: editStatus,
+      avatar: editAvatar,
+    };
+
+    const res = await AuthService.updateAccount(editTargetUser.id, updates);
+    if (res.success) {
+      showNotification('success', res.message);
+      setIsEditModalOpen(false);
+      setEditTargetUser(null);
       refreshData();
     } else {
       showNotification('error', res.message);
@@ -556,6 +606,16 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                             </button>
                           )}
 
+                          {/* Edit User Details */}
+                          <button
+                            onClick={() => handleOpenEditModal(user)}
+                            className="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition cursor-pointer flex items-center gap-1 px-2.5 py-1 text-xs font-bold border border-blue-200"
+                            title="Sửa thông tin tài khoản"
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-blue-600" />
+                            <span>Sửa</span>
+                          </button>
+
                           {/* Reset Password */}
                           <button
                             onClick={() => {
@@ -878,6 +938,172 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                 Đóng
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT ACCOUNT MODAL */}
+      {isEditModalOpen && editTargetUser && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border-2 border-blue-100 space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 border border-blue-300 text-blue-800 flex items-center justify-center text-2xl shadow-xs">
+                ✏️
+              </div>
+              <div>
+                <h3 className="font-black text-lg text-slate-900">CHỈNH SỬA TÀI KHOẢN</h3>
+                <p className="text-xs text-slate-500 font-bold">
+                  Sửa thông tin tài khoản @{editTargetUser.username}
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveEditUser} className="space-y-4">
+              {/* Họ và tên */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                  1. Họ và tên người dùng (*):
+                </label>
+                <input
+                  type="text"
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  placeholder="Nhập họ và tên..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-200 focus:border-blue-500 focus:bg-white rounded-2xl text-sm font-bold text-slate-800 focus:outline-none transition"
+                  required
+                />
+              </div>
+
+              {/* Tên đăng nhập (Readonly) */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                  2. Tên đăng nhập (Mã cố định):
+                </label>
+                <input
+                  type="text"
+                  value={`@${editTargetUser.username}`}
+                  disabled
+                  className="w-full px-4 py-2.5 bg-slate-100 border-2 border-slate-200 rounded-2xl text-sm font-bold text-slate-500 cursor-not-allowed font-mono"
+                />
+              </div>
+
+              {/* Khối Lớp & Lớp Học */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                    3. Khối Lớp (*):
+                  </label>
+                  <select
+                    value={editGrade}
+                    onChange={(e) => setEditGrade(Number(e.target.value) as GradeLevel)}
+                    className="w-full px-3 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-xs font-black text-slate-800 focus:outline-none"
+                  >
+                    <option value={3}>Khối Lớp 3</option>
+                    <option value={4}>Khối Lớp 4</option>
+                    <option value={5}>Khối Lớp 5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                    4. Lớp Học (*):
+                  </label>
+                  <select
+                    value={editClass}
+                    onChange={(e) => setEditClass(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-xs font-black text-slate-800 focus:outline-none"
+                  >
+                    {classes.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        Lớp {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Trạng Thái & Vai Trò */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                    5. Trạng Thái (*):
+                  </label>
+                  <select
+                    value={editStatus}
+                    onChange={(e) => setEditStatus(e.target.value as any)}
+                    className="w-full px-3 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-xs font-black text-slate-800 focus:outline-none"
+                  >
+                    <option value="active">🟢 Đang hoạt động</option>
+                    <option value="pending">🟡 Chờ kích hoạt</option>
+                    <option value="locked">🔴 Bị tạm khóa</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                    6. Vai Trò (*):
+                  </label>
+                  <select
+                    value={editRole}
+                    onChange={(e) => setEditRole(e.target.value as any)}
+                    className="w-full px-3 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-2xl text-xs font-black text-slate-800 focus:outline-none"
+                  >
+                    <option value="student">🎒 Học Sinh</option>
+                    <option value="teacher">👩‍🏫 Giáo Viên</option>
+                    <option value="admin">🛡️ Quản Trị Viên</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Avatar Selector */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                  7. Chọn Biểu Tượng Đại Diện:
+                </label>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  {['👦', '👧', '🚀', '🤖', '👩‍🏫', '👨‍💻', '🐱', '🦁', '🌟', '🎨'].map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => setEditAvatar(emoji)}
+                      className={`w-10 h-10 rounded-2xl text-xl flex items-center justify-center transition cursor-pointer shrink-0 ${
+                        editAvatar === emoji
+                          ? 'bg-blue-100 border-2 border-blue-500 scale-110 shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 border border-slate-200'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-3 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="w-1/3 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="w-2/3 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>LƯU THAY ĐỔI TÀI KHOẢN</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
