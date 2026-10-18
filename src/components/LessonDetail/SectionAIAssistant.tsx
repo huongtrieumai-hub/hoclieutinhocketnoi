@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX } from 'lucide-react';
+import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck } from 'lucide-react';
 
 interface Props {
   lessonTitle: string;
@@ -41,6 +41,27 @@ export const SectionAIAssistant: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Gemini API Key Settings Modal
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [customKeyInput, setCustomKeyInput] = useState(() => localStorage.getItem('gemini_api_key') || '');
+  const [keyNotice, setKeyNotice] = useState<string | null>(null);
+
+  const handleSaveApiKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanKey = customKeyInput.trim();
+    if (cleanKey) {
+      localStorage.setItem('gemini_api_key', cleanKey);
+      setKeyNotice('Đã lưu Gemini API Key thành công!');
+    } else {
+      localStorage.removeItem('gemini_api_key');
+      setKeyNotice('Đã xóa Gemini API Key riêng. Hệ thống sẽ dùng Variable GEMINI_API_KEY trên Vercel.');
+    }
+    setTimeout(() => {
+      setKeyNotice(null);
+      setIsApiKeyModalOpen(false);
+    }, 1500);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,9 +108,15 @@ export const SectionAIAssistant: React.FC<Props> = ({
     setIsLoading(true);
 
     try {
+      const storedKey = localStorage.getItem('gemini_api_key') || '';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (storedKey) {
+        headers['x-gemini-key'] = storedKey;
+      }
+
       const response = await fetch('/api/robot-tinhoc', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           message: text,
           lessonTitle,
@@ -98,6 +125,7 @@ export const SectionAIAssistant: React.FC<Props> = ({
           keyTakeaways,
           mode,
           history: messages.map((m) => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text })),
+          customApiKey: storedKey || undefined,
         }),
       });
 
@@ -143,9 +171,20 @@ export const SectionAIAssistant: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white/20 rounded-xl text-xs font-bold">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping" />
-          <span>Sẵn sàng trợ giúp</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsApiKeyModalOpen(true)}
+            className="px-3.5 py-2 bg-white/20 hover:bg-white/30 text-white font-black text-xs rounded-2xl flex items-center gap-1.5 transition cursor-pointer backdrop-blur-xs shadow-xs"
+            title="Cài đặt Gemini API Key & Hướng dẫn Vercel"
+          >
+            <Key className="w-4 h-4 text-amber-300" />
+            <span className="hidden xs:inline">Cài Đặt Gemini Key</span>
+          </button>
+
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/20 rounded-xl text-xs font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping" />
+            <span>Sẵn sàng trợ giúp</span>
+          </div>
         </div>
       </div>
 
@@ -292,6 +331,94 @@ export const SectionAIAssistant: React.FC<Props> = ({
           </button>
         </div>
       </div>
+
+      {/* GEMINI API KEY & VERCEL SETTINGS MODAL */}
+      {isApiKeyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border-4 border-emerald-300 space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setIsApiKeyModalOpen(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center text-2xl shadow-md">
+                🔑
+              </div>
+              <div>
+                <h3 className="font-black text-lg text-slate-900">CÀI ĐẶT GEMINI API KEY &amp; VERCEL</h3>
+                <p className="text-xs text-slate-500 font-bold">
+                  Cấu hình Key AI cho Robot Tin Học triển khai lên Vercel
+                </p>
+              </div>
+            </div>
+
+            {/* Vercel Deployment Instructions */}
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 text-xs text-emerald-950 font-medium">
+              <div className="font-black text-emerald-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Hướng dẫn cài đặt biến môi trường Vercel (Khuyên dùng):</span>
+              </div>
+              <ol className="list-decimal list-inside space-y-1 pl-1 text-[11px] leading-relaxed">
+                <li>Vào trang Dashboard dự án Vercel của bạn.</li>
+                <li>Chọn <strong>Settings</strong> &gt; <strong>Environment Variables</strong>.</li>
+                <li>Thêm biến mới: Name: <code className="bg-emerald-100 px-1 py-0.5 rounded font-mono font-bold text-emerald-900">GEMINI_API_KEY</code></li>
+                <li>Value: Dán mã Gemini API Key lấy từ Google AI Studio.</li>
+                <li>Nhấn <strong>Save</strong> và Redeploy lại dự án trên Vercel.</li>
+              </ol>
+            </div>
+
+            {/* Custom Local Storage Key Form */}
+            <form onSubmit={handleSaveApiKey} className="space-y-4 pt-2 border-t border-slate-100">
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                  Hoặc Nhập Gemini API Key Trực Tiếp (Lưu Trình Duyệt):
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={customKeyInput}
+                    onChange={(e) => setCustomKeyInput(e.target.value)}
+                    placeholder="AIzaSy..."
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 focus:bg-white rounded-2xl text-xs font-mono text-slate-800 focus:outline-none transition shadow-2xs"
+                  />
+                  <Key className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                </div>
+                <p className="text-[10px] text-slate-400 font-semibold mt-1">
+                  Key được lưu bảo mật trong LocalStorage trình duyệt để Robot AI trực tiếp phục vụ học sinh.
+                </p>
+              </div>
+
+              {keyNotice && (
+                <div className="p-3 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-700" />
+                  <span>{keyNotice}</span>
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsApiKeyModalOpen(false)}
+                  className="w-1/3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition cursor-pointer"
+                >
+                  Đóng
+                </button>
+                <button
+                  type="submit"
+                  className="w-2/3 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs rounded-2xl shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>LƯU CÀI ĐẶT GEMINI KEY</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

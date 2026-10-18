@@ -63,15 +63,35 @@ function generateFallbackResponse(
 // API endpoint for Robot Tin Học chat
 app.post('/api/robot-tinhoc', async (req, res) => {
   try {
-    const { message, lessonTitle, grade, topic, keyTakeaways, mode, history } = req.body;
+    const { message, lessonTitle, grade, topic, keyTakeaways, mode, history, customApiKey } = req.body;
 
     const currentGrade = grade || 3;
     const currentLesson = lessonTitle || 'Tin học Tiểu học';
     const currentTopic = topic || 'Máy tính và em';
     const points: string[] = Array.isArray(keyTakeaways) ? keyTakeaways : [];
 
+    const effectiveApiKey =
+      customApiKey ||
+      (req.headers['x-gemini-key'] as string) ||
+      process.env.GEMINI_API_KEY ||
+      process.env.VITE_GEMINI_API_KEY;
+
+    let activeAi = ai;
+    if ((customApiKey || req.headers['x-gemini-key']) && effectiveApiKey) {
+      try {
+        activeAi = new GoogleGenAI({
+          apiKey: effectiveApiKey,
+          httpOptions: {
+            headers: { 'User-Agent': 'aistudio-build' },
+          },
+        });
+      } catch (e) {
+        console.warn('Failed to init custom Gemini key:', e);
+      }
+    }
+
     // If Gemini client is not initialized or fails, use high-fidelity rule-based pedagogical fallback
-    if (!ai) {
+    if (!activeAi) {
       const fallbackReply = generateFallbackResponse(
         message || '',
         currentLesson,
@@ -124,7 +144,7 @@ Yêu cầu hiện tại của học sinh (Chế độ: ${mode || 'chat'}):
 Hãy trả lời học sinh bằng tiếng Việt thật truyền cảm hứng và phù hợp với học sinh Lớp ${currentGrade}:
     `.trim();
 
-    const response = await ai.models.generateContent({
+    const response = await activeAi.models.generateContent({
       model: 'gemini-3.8-flash',
       contents: prompt,
       config: {
