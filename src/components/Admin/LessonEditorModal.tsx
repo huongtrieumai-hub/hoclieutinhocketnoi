@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CloudinaryService } from '../../services/cloudinaryService';
 import {
   Lesson,
   Topic,
@@ -281,76 +282,55 @@ export const LessonEditorModal: React.FC<Props> = ({
     }
   };
 
-  // Image Upload handler for Mind Map
-  const handleUploadMindMapImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image Upload handler for Mind Map via Cloudinary onjpako3
+  const handleUploadMindMapImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.match(/^image\/(png|jpeg|jpg|webp)$/i)) {
-      alert('Vui lòng chọn tệp ảnh có định dạng PNG, JPG, JPEG hoặc WEBP!');
-      return;
+    try {
+      const result = await CloudinaryService.uploadFile(file);
+      const newImg: MindMapImageItem = {
+        id: 'mm_img_' + Date.now(),
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        imageUrl: result.secureUrl,
+        caption: 'Ảnh sơ đồ tư duy tải lên Cloudinary',
+      };
+      setMindMapImages([...mindMapImages, newImg]);
+    } catch (err: unknown) {
+      alert('Lỗi tải tệp lên Cloudinary: ' + (err instanceof Error ? err.message : String(err)));
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        const newImg: MindMapImageItem = {
-          id: 'mm_img_' + Date.now(),
-          title: file.name.replace(/\.[^/.]+$/, ''),
-          imageUrl: dataUrl,
-          caption: 'Ảnh sơ đồ tư duy tải lên từ máy tính',
-        };
-        setMindMapImages([...mindMapImages, newImg]);
-      }
-    };
-    reader.readAsDataURL(file);
     e.target.value = '';
   };
 
-  const handleReplaceMindMapImage = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReplaceMindMapImage = async (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.match(/^image\/(png|jpeg|jpg|webp)$/i)) {
-      alert('Vui lòng chọn tệp ảnh có định dạng PNG, JPG, JPEG hoặc WEBP!');
-      return;
+    try {
+      const result = await CloudinaryService.uploadFile(file);
+      const updated = [...mindMapImages];
+      updated[idx].imageUrl = result.secureUrl;
+      setMindMapImages(updated);
+    } catch (err: unknown) {
+      alert('Lỗi tải tệp lên Cloudinary: ' + (err instanceof Error ? err.message : String(err)));
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        const updated = [...mindMapImages];
-        updated[idx].imageUrl = dataUrl;
-        setMindMapImages(updated);
-      }
-    };
-    reader.readAsDataURL(file);
     e.target.value = '';
   };
 
-  // Universal Image Upload handler for Questions and Answers
-  const handleUploadImageFile = (
+  // Universal File Upload handler (Images, Audio, Media) via Cloudinary onjpako3
+  const handleUploadImageFile = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    onSuccess: (dataUrl: string) => void
+    onSuccess: (url: string) => void
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.match(/^image\/(png|jpeg|jpg|webp|gif|svg\+xml)$/i)) {
-      alert('Vui lòng chọn tệp hình ảnh có định dạng PNG, JPG, JPEG, WEBP hoặc GIF!');
-      return;
+    try {
+      const result = await CloudinaryService.uploadFile(file);
+      onSuccess(result.secureUrl);
+    } catch (err: unknown) {
+      alert('Lỗi tải tệp lên Cloudinary: ' + (err instanceof Error ? err.message : String(err)));
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        onSuccess(dataUrl);
-      }
-    };
-    reader.readAsDataURL(file);
     e.target.value = '';
   };
 

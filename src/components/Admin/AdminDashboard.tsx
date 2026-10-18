@@ -7,6 +7,7 @@ import { TeacherGuideModal } from './TeacherGuideModal';
 import { LearnerMonitoringView } from './LearnerMonitoringView';
 import { StudentAccountsManager } from './StudentAccountsManager';
 import { FirebaseAdminClaimsGuideModal } from './FirebaseAdminClaimsGuideModal';
+import { CloudinaryMediaUploader } from '../CloudinaryMediaUploader';
 import {
   BookOpen,
   Plus,
@@ -17,6 +18,7 @@ import {
   ArrowDown,
   Download,
   Upload,
+  UploadCloud,
   RefreshCcw,
   HelpCircle,
   LogOut,
@@ -55,7 +57,7 @@ export const AdminDashboard: React.FC<Props> = ({
   onExitAdmin,
   onPreviewLesson,
 }) => {
-  const [activeTab, setActiveTab] = useState<'lessons' | 'learners' | 'scores' | 'accounts' | 'backup'>('lessons');
+  const [activeTab, setActiveTab] = useState<'lessons' | 'learners' | 'scores' | 'accounts' | 'backup' | 'cloudinary'>('lessons');
   const [filterGrade, setFilterGrade] = useState<GradeLevel | 'all'>('all');
   const [filterTopic, setFilterTopic] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -341,6 +343,18 @@ export const AdminDashboard: React.FC<Props> = ({
             >
               <Download className="w-4 h-4" />
               <span>Sao Lưu &amp; Khôi Phục (JSON)</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('cloudinary')}
+              className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer ${
+                activeTab === 'cloudinary'
+                  ? 'bg-amber-400 text-slate-900 shadow-md scale-102'
+                  : 'text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <UploadCloud className="w-4 h-4 text-cyan-300" />
+              <span>Lưu Trữ Đám Mây Cloudinary ☁️</span>
             </button>
           </div>
         </div>
@@ -777,6 +791,41 @@ export const AdminDashboard: React.FC<Props> = ({
         {/* TAB 4: QUẢN LÝ HỌC SINH & LỚP HỌC */}
         {activeTab === 'accounts' && (
           <StudentAccountsManager currentUser={currentUser || null} />
+        )}
+
+        {/* TAB 5: LƯU TRỮ ĐÁM MÂY CLOUDINARY */}
+        {activeTab === 'cloudinary' && (
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-200 shadow-sm space-y-6">
+            <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center text-2xl shadow-md">
+                ☁️
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-800">
+                  LƯU TRỮ ĐÁM MÂY CLOUDINARY
+                </h3>
+                <p className="text-xs text-slate-500 font-bold">
+                  Dự án Cloud Name: <span className="text-blue-600 font-mono">onjpako3</span> | Upload Preset: <span className="text-emerald-600 font-mono">ml_default</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-2xl text-xs font-semibold text-blue-900 leading-relaxed">
+              💡 <strong>Hướng dẫn lưu trữ tệp:</strong> Mọi tệp Hình ảnh (PNG, JPG, WEBP, GIF, SVG) và Âm thanh (MP3, WAV, AAC, M4A) được chọn tải lên từ máy tính của Thầy/Cô sẽ được tải trực tiếp lên đám mây <strong>Cloudinary CDN (`onjpako3`)</strong> và trả về liên kết HTTPS vĩnh viễn. Thầy/Cô có thể dễ dàng sao chép liên kết để chèn vào bài học, sơ đồ tư duy hoặc âm thanh minh họa!
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CloudinaryMediaUploader
+                acceptType="image"
+                label="1. Tải Tệp Hình Ảnh Từ Máy Tính Lên Cloudinary"
+              />
+
+              <CloudinaryMediaUploader
+                acceptType="audio"
+                label="2. Tải Tệp Âm Thanh / Giọng Nói Từ Máy Tính Lên Cloudinary"
+              />
+            </div>
+          </div>
         )}
       </div>
 
