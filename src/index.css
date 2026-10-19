@@ -58,53 +58,99 @@
   animation: pulse-subtle 3s ease-in-out infinite;
 }
 
-/* Custom Palette & Design System Utilities */
-.bg-brand-navy {
-  background-color: #0F2C59;
+/* Custom 5-Color Palette:
+   1. #D79922 - Warm Golden Ochre
+   2. #EFE2BA - Soft Cream / Sand
+   3. #F13C20 - Vivid Coral Red
+   4. #4056A1 - Classic Royal / Slate Blue
+   5. #C5CBE3 - Soft Periwinkle / Light Lavender-Blue
+*/
+:root {
+  --color-gold: #D79922;
+  --color-cream: #EFE2BA;
+  --color-red: #F13C20;
+  --color-blue: #4056A1;
+  --color-periwinkle: #C5CBE3;
+}
+
+.bg-brand-navy,
+.bg-brand-blue {
+  background-color: #4056A1;
 }
 
 .bg-brand-red {
-  background-color: #C8102E;
+  background-color: #F13C20;
 }
 
-.bg-brand-orange {
-  background-color: #F08200;
-}
-
+.bg-brand-orange,
 .bg-brand-gold {
-  background-color: #FFF0AD;
+  background-color: #D79922;
 }
 
-.text-brand-navy {
-  color: #0F2C59;
+.bg-brand-cream {
+  background-color: #EFE2BA;
+}
+
+.bg-brand-periwinkle {
+  background-color: #C5CBE3;
+}
+
+.text-brand-navy,
+.text-brand-blue {
+  color: #4056A1;
 }
 
 .text-brand-red {
-  color: #C8102E;
+  color: #F13C20;
 }
 
-.text-brand-orange {
-  color: #F08200;
+.text-brand-orange,
+.text-brand-gold {
+  color: #D79922;
 }
 
-.border-brand-orange {
-  border-color: #F08200;
+.text-brand-cream {
+  color: #EFE2BA;
 }
 
+.border-brand-orange,
 .border-brand-gold {
-  border-color: #FFF0AD;
+  border-color: #D79922;
 }
 
-.glow-orange {
-  box-shadow: 0 8px 25px -4px rgba(240, 130, 0, 0.35);
+.border-brand-red {
+  border-color: #F13C20;
+}
+
+.border-brand-blue,
+.border-brand-navy {
+  border-color: #4056A1;
+}
+
+.border-brand-cream {
+  border-color: #EFE2BA;
+}
+
+.border-brand-periwinkle {
+  border-color: #C5CBE3;
+}
+
+.glow-orange,
+.glow-gold {
+  box-shadow: 0 8px 25px -4px rgba(215, 153, 34, 0.35);
 }
 
 .glow-red {
-  box-shadow: 0 8px 25px -4px rgba(200, 16, 46, 0.35);
+  box-shadow: 0 8px 25px -4px rgba(241, 60, 32, 0.35);
 }
 
-.glow-navy {
-  box-shadow: 0 8px 25px -4px rgba(15, 44, 89, 0.35);
+.glow-navy,
+.glow-blue {
+  box-shadow: 0 8px 25px -4px rgba(64, 86, 161, 0.35);
+}
+
+.glow-periwinkle {
+  box-shadow: 0 8px 25px -4px rgba(197, 203, 227, 0.5);
 }
 
 /* Smooth custom scrollbars */

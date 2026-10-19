@@ -177,7 +177,7 @@ export const BannerSettingsManager: React.FC<Props> = ({
     if (overlayColor === 'dark') return 'rgba(15, 23, 42, 0.75)';
     if (overlayColor === 'light') return 'rgba(255, 255, 255, 0.75)';
     // Default gradient overlay: Kết Nối Tri Thức themed
-    return 'linear-gradient(to right, rgba(15, 44, 89, 0.92) 0%, rgba(200, 16, 46, 0.78) 55%, rgba(240, 130, 0, 0.65) 100%)';
+    return 'linear-gradient(to right, rgba(64, 86, 161, 0.92) 0%, rgba(241, 60, 32, 0.78) 55%, rgba(215, 153, 34, 0.65) 100%)';
   };
 
   return (
@@ -297,8 +297,8 @@ export const BannerSettingsManager: React.FC<Props> = ({
               backgroundSize: bgSize,
               backgroundRepeat: 'no-repeat',
             }}
-            className={`relative overflow-hidden rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-b-4 border-[#F08200] min-h-[220px] flex items-center ${
-              !imageUrl ? 'bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200]' : 'bg-slate-900'
+            className={`relative overflow-hidden rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-b-4 border-[#D79922] min-h-[220px] flex items-center ${
+              !imageUrl ? 'bg-gradient-to-r from-[#4056A1] via-[#F13C20] to-[#D79922]' : 'bg-slate-900'
             }`}
           >
             {/* Color Overlay Layer for perfect text contrast and character visibility */}
@@ -314,8 +314,8 @@ export const BannerSettingsManager: React.FC<Props> = ({
 
             {/* Left Content Area (Text & Buttons) */}
             <div className="relative z-10 max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#FFF0AD] text-[#0F2C59] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
-                <Sparkles className="w-3.5 h-3.5 text-[#F08200] animate-spin" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#EFE2BA] text-[#4056A1] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
+                <Sparkles className="w-3.5 h-3.5 text-[#D79922] animate-spin" />
                 <span>{tagline || 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống'}</span>
               </div>
 
@@ -324,7 +324,7 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
                     {headline || 'Học Liệu Tin Học 3–4–5!'}
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#FFF0AD] font-bold leading-relaxed mt-1">
+                  <p className="text-xs sm:text-sm text-[#EFE2BA] font-bold leading-relaxed mt-1">
                     {subtext ||
                       'Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím & chuột, trò chơi ôn tập và tương tác cùng Robot Tin Học!'}
                   </p>
@@ -334,7 +334,7 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
                     Chào bạn Học Sinh 👦
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#FFF0AD] font-bold leading-relaxed mt-1">
+                  <p className="text-xs sm:text-sm text-[#EFE2BA] font-bold leading-relaxed mt-1">
                     Chúc em một ngày học tập môn Tin học thật hứng khởi, tích lũy thêm nhiều sao vàng và thực hành sáng tạo!
                   </p>
                 </div>
@@ -346,22 +346,22 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <>
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-[#FFF0AD] text-[#0F2C59] rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#F08200]"
+                      className="px-5 py-2.5 bg-[#EFE2BA] text-[#4056A1] rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#D79922]"
                     >
-                      <LogIn className="w-3.5 h-3.5 text-[#C8102E]" />
+                      <LogIn className="w-3.5 h-3.5 text-[#F13C20]" />
                       <span>Đăng Nhập Tài Khoản</span>
                     </button>
 
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-[#C8102E] text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#FFF0AD]"
+                      className="px-5 py-2.5 bg-[#F13C20] text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#EFE2BA]"
                     >
                       <UserCheck className="w-3.5 h-3.5" />
                       <span>Đăng Ký Tài Khoản Mới</span>
                     </button>
                   </>
                 ) : (
-                  <div className="flex items-center gap-2 text-white/95 text-xs font-bold bg-[#0F2C59]/60 border border-[#F08200] px-4 py-2 rounded-2xl backdrop-blur-xs">
+                  <div className="flex items-center gap-2 text-white/95 text-xs font-bold bg-[#4056A1]/70 border border-[#D79922] px-4 py-2 rounded-2xl backdrop-blur-xs">
                     <span>✨ Em hãy chọn bài học ở danh sách bên dưới để bắt đầu học nhé!</span>
                   </div>
                 )}
