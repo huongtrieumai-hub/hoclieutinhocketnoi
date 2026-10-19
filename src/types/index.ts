@@ -349,13 +349,13 @@ export interface BannerConfig {
 }
 
 export const DEFAULT_BANNER_CONFIG: BannerConfig = {
-  imageUrl: '',
+  imageUrl: '/banner.svg',
   opacity: 85,
-  overlayColor: 'gradient',
-  bgPosition: 'center',
+  overlayColor: 'none',
+  bgPosition: 'right',
   bgSize: 'cover',
   headline: 'Học Liệu Tin Học 3–4–5!',
   tagline: 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống',
   subtext: 'Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím & chuột, trò chơi ôn tập và tương tác cùng Robot Tin Học!',
-  showMascot: true,
+  showMascot: false,
 };

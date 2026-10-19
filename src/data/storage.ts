@@ -493,7 +493,12 @@ export const StorageService = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.BANNER);
       if (data) {
-        return { ...DEFAULT_BANNER_CONFIG, ...JSON.parse(data) };
+        const parsed = JSON.parse(data);
+        return {
+          ...DEFAULT_BANNER_CONFIG,
+          ...parsed,
+          imageUrl: parsed.imageUrl || DEFAULT_BANNER_CONFIG.imageUrl || '/banner.svg',
+        };
       }
     } catch (e) {
       console.error('Error reading banner config:', e);

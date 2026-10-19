@@ -1,0 +1,442 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 520" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Sky Background Gradient -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="35%" stop-color="#0ea5e9" />
+      <stop offset="70%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#7dd3fc" />
+    </linearGradient>
+
+    <!-- Cloud Soft Gradient -->
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#dbeafe" stop-opacity="0.75" />
+    </linearGradient>
+
+    <!-- Green Trees Gradient -->
+    <linearGradient id="treeGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="100%" stop-color="#16a34a" />
+    </linearGradient>
+    <linearGradient id="treeGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Desk Gradient -->
+    <linearGradient id="deskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa" />
+      <stop offset="50%" stop-color="#fdba74" />
+      <stop offset="100%" stop-color="#fb923c" />
+    </linearGradient>
+
+    <!-- Robot Metallic Gradient -->
+    <linearGradient id="robotBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#f1f5f9" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <linearGradient id="robotVisor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Lightbulb Halo Glow -->
+    <radialGradient id="bulbHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#facc15" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#eab308" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Glowing Eye Filter -->
+    <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Drop Shadow for 3D Elements -->
+    <filter id="shadow3d" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.25" />
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- 1. Sky Background -->
+  <rect width="1800" height="520" fill="url(#skyGrad)" />
+
+  <!-- 2. Gentle Sun Rays from top right -->
+  <g opacity="0.18">
+    <polygon points="1400,0 1200,520 1280,520 1440,0" fill="#ffffff" />
+    <polygon points="1480,0 1340,520 1420,520 1520,0" fill="#ffffff" />
+    <polygon points="1560,0 1500,520 1580,520 1620,0" fill="#ffffff" />
+    <polygon points="1320,0 1080,520 1140,520 1360,0" fill="#ffffff" />
+  </g>
+
+  <!-- 3. Fluffy Clouds in Background -->
+  <g fill="url(#cloudGrad)">
+    <!-- Cloud Cluster Left -->
+    <circle cx="120" cy="180" r="70" />
+    <circle cx="180" cy="160" r="90" />
+    <circle cx="260" cy="170" r="80" />
+    <circle cx="340" cy="190" r="60" />
+    <path d="M 60,220 L 400,220 A 40,40 0 0,0 360,180 L 100,180 Z" opacity="0.4" />
+
+    <!-- Cloud Cluster Mid-Left -->
+    <circle cx="580" cy="130" r="50" />
+    <circle cx="630" cy="110" r="75" />
+    <circle cx="700" cy="120" r="65" />
+    <circle cx="760" cy="140" r="45" />
+
+    <!-- Cloud Cluster Top Right Behind Characters -->
+    <circle cx="1320" cy="140" r="90" />
+    <circle cx="1420" cy="110" r="120" />
+    <circle cx="1540" cy="120" r="100" />
+    <circle cx="1660" cy="150" r="85" />
+    <circle cx="1740" cy="170" r="70" />
+  </g>
+
+  <!-- 4. Lush Green Trees Canopy at bottom -->
+  <g opacity="0.95">
+    <!-- Back row deeper green -->
+    <circle cx="80" cy="460" r="80" fill="url(#treeGrad2)" />
+    <circle cx="220" cy="440" r="90" fill="url(#treeGrad2)" />
+    <circle cx="380" cy="450" r="85" fill="url(#treeGrad2)" />
+    <circle cx="540" cy="430" r="100" fill="url(#treeGrad2)" />
+    <circle cx="700" cy="440" r="95" fill="url(#treeGrad2)" />
+    <circle cx="860" cy="450" r="90" fill="url(#treeGrad2)" />
+    <circle cx="1020" cy="440" r="95" fill="url(#treeGrad2)" />
+    <circle cx="1180" cy="430" r="105" fill="url(#treeGrad2)" />
+    <circle cx="1350" cy="440" r="100" fill="url(#treeGrad2)" />
+    <circle cx="1520" cy="430" r="110" fill="url(#treeGrad2)" />
+    <circle cx="1700" cy="440" r="100" fill="url(#treeGrad2)" />
+
+    <!-- Front row brighter green -->
+    <circle cx="150" cy="480" r="75" fill="url(#treeGrad1)" />
+    <circle cx="300" cy="470" r="80" fill="url(#treeGrad1)" />
+    <circle cx="460" cy="475" r="85" fill="url(#treeGrad1)" />
+    <circle cx="620" cy="465" r="90" fill="url(#treeGrad1)" />
+    <circle cx="780" cy="470" r="80" fill="url(#treeGrad1)" />
+    <circle cx="940" cy="475" r="85" fill="url(#treeGrad1)" />
+    <circle cx="1100" cy="465" r="95" fill="url(#treeGrad1)" />
+    <circle cx="1270" cy="470" r="90" fill="url(#treeGrad1)" />
+    <circle cx="1440" cy="460" r="100" fill="url(#treeGrad1)" />
+    <circle cx="1620" cy="470" r="95" fill="url(#treeGrad1)" />
+    <circle cx="1780" cy="460" r="90" fill="url(#treeGrad1)" />
+  </g>
+
+  <!-- 5. Decorative Sparkle Stars across the sky -->
+  <g fill="#fef08a" opacity="0.9">
+    <!-- Star 1 left-mid -->
+    <path d="M 915,110 Q 915,125 930,125 Q 915,125 915,140 Q 915,125 900,125 Q 915,125 915,110 Z" />
+    <!-- Star 2 mid -->
+    <path d="M 620,60 Q 620,70 630,70 Q 620,70 620,80 Q 620,70 610,70 Q 620,70 620,60 Z" />
+    <!-- Star 3 far right -->
+    <path d="M 1720,240 Q 1720,250 1730,250 Q 1720,250 1720,260 Q 1720,250 1710,250 Q 1720,250 1720,240 Z" />
+    <path d="M 1750,320 Q 1750,327 1757,327 Q 1750,327 1750,334 Q 1750,327 1743,327 Q 1750,327 1750,320 Z" />
+  </g>
+
+  <!-- 6. RIGHT SIDE: CHARACTERS & DESK COMPOSITION (Matches user's image) -->
+  <g id="charactersSection" filter="url(#shadow3d)">
+    <!-- Wooden Study Desk Table Surface -->
+    <path d="M 880,520 L 920,490 L 1800,490 L 1800,520 Z" fill="url(#deskGrad)" />
+    <rect x="910" y="490" width="890" height="30" fill="#f97316" opacity="0.3" />
+
+    <!-- Stacks of Colorful Books on Left of Desk -->
+    <g transform="translate(920, 460)">
+      <!-- Bottom book (purple) -->
+      <rect x="0" y="18" width="110" height="14" rx="4" fill="#a855f7" />
+      <rect x="15" y="20" width="85" height="10" rx="2" fill="#faf5ff" opacity="0.8" />
+      <!-- Middle book (pink) -->
+      <rect x="5" y="4" width="100" height="14" rx="4" fill="#ec4899" />
+      <rect x="20" y="6" width="75" height="10" rx="2" fill="#fdf2f8" opacity="0.8" />
+      <!-- Top notebook (orange) -->
+      <rect x="12" y="-8" width="90" height="12" rx="3" fill="#f97316" />
+      <rect x="25" y="-6" width="65" height="8" rx="2" fill="#fff7ed" opacity="0.8" />
+    </g>
+
+    <!-- Stacks of Colorful Books on Far Right of Desk -->
+    <g transform="translate(1660, 400)">
+      <!-- Book 1 (red) -->
+      <rect x="0" y="70" width="120" height="18" rx="5" fill="#ef4444" />
+      <rect x="15" y="73" width="95" height="12" rx="2" fill="#ffffff" opacity="0.8" />
+      <!-- Book 2 (green) -->
+      <rect x="5" y="50" width="115" height="18" rx="5" fill="#10b981" />
+      <rect x="20" y="53" width="90" height="12" rx="2" fill="#ffffff" opacity="0.8" />
+      <!-- Book 3 (blue) -->
+      <rect x="10" y="30" width="110" height="18" rx="5" fill="#3b82f6" />
+      <rect x="25" y="33" width="85" height="12" rx="2" fill="#ffffff" opacity="0.8" />
+      <!-- Book 4 (amber) -->
+      <rect x="15" y="10" width="105" height="18" rx="5" fill="#f59e0b" />
+      <rect x="30" y="13" width="80" height="12" rx="2" fill="#ffffff" opacity="0.8" />
+      <!-- Book 5 top tilted (indigo) -->
+      <g transform="rotate(-6, 25, -5)">
+        <rect x="20" y="-8" width="95" height="16" rx="4" fill="#6366f1" />
+        <rect x="32" y="-5" width="75" height="10" rx="2" fill="#ffffff" opacity="0.8" />
+      </g>
+    </g>
+
+    <!-- ==================== CHARACTER 1: CUTE GIRL IN YELLOW ==================== -->
+    <g id="girlCharacter" transform="translate(1010, 280)">
+      <!-- Hair Back / Ponytail -->
+      <circle cx="30" cy="55" r="50" fill="#451a03" />
+      <!-- Left pigtail bun -->
+      <circle cx="-10" cy="25" r="28" fill="#451a03" />
+      <circle cx="-8" cy="22" r="8" fill="#ec4899" /> <!-- Hairband pink -->
+      <!-- Right ponytail high -->
+      <circle cx="85" cy="15" r="32" fill="#451a03" />
+      <circle cx="80" cy="18" r="9" fill="#ec4899" />
+
+      <!-- Yellow T-Shirt Body -->
+      <path d="M 15,110 Q 50,105 85,110 L 95,210 L 5,210 Z" fill="#eab308" />
+      <path d="M 35,110 Q 50,125 65,110 Z" fill="#fef08a" /> <!-- Collar -->
+
+      <!-- Arms on desk pointing/leaning -->
+      <!-- Left arm -->
+      <path d="M 15,120 Q -5,145 20,185 Q 40,195 50,185" fill="#fed7aa" stroke="#fcd34d" stroke-width="6" />
+      <!-- Right arm reaching happily towards Robot -->
+      <path d="M 80,120 Q 110,140 140,180 Q 155,185 145,195" fill="#fed7aa" stroke="#fcd34d" stroke-width="8" stroke-linecap="round" />
+
+      <!-- Neck & Face -->
+      <rect x="40" y="95" width="20" height="20" rx="5" fill="#fed7aa" />
+      <circle cx="50" cy="65" r="45" fill="#fed7aa" />
+
+      <!-- Cheeks -->
+      <circle cx="22" cy="78" r="10" fill="#fda4af" opacity="0.6" />
+      <circle cx="78" cy="78" r="10" fill="#fda4af" opacity="0.6" />
+
+      <!-- Big Cute Eyes (Anime/Pixar style) -->
+      <!-- Left Eye -->
+      <ellipse cx="32" cy="65" rx="8" ry="11" fill="#1e1b4b" />
+      <circle cx="30" cy="61" r="3.5" fill="#ffffff" />
+      <circle cx="34" cy="68" r="1.5" fill="#ffffff" />
+      <!-- Right Eye -->
+      <ellipse cx="68" cy="65" rx="8" ry="11" fill="#1e1b4b" />
+      <circle cx="66" cy="61" r="3.5" fill="#ffffff" />
+      <circle cx="70" cy="68" r="1.5" fill="#ffffff" />
+
+      <!-- Cute Eyelashes & Brows -->
+      <path d="M 24,52 Q 32,48 40,53" stroke="#451a03" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <path d="M 60,53 Q 68,48 76,52" stroke="#451a03" stroke-width="2.5" fill="none" stroke-linecap="round" />
+
+      <!-- Sweet Smile -->
+      <path d="M 42,82 Q 50,92 58,82" stroke="#e11d48" stroke-width="3" fill="#fda4af" stroke-linecap="round" />
+
+      <!-- Hair Bangs Front -->
+      <path d="M 10,50 Q 30,25 50,42 Q 70,25 90,50 Q 80,15 50,18 Q 20,15 10,50 Z" fill="#451a03" />
+    </g>
+
+    <!-- ==================== CHARACTER 2: FRIENDLY AI ROBOT IN CENTER ==================== -->
+    <g id="robotCharacter" transform="translate(1190, 160)" filter="url(#softShadow)">
+      <!-- Glowing Lightbulb Overhead with Rays (Key visual from user's image!) -->
+      <circle cx="110" cy="-25" r="50" fill="url(#bulbHalo)" />
+      <!-- Lightbulb Body -->
+      <g transform="translate(95, -50)">
+        <!-- Yellow Glass Bulb -->
+        <path d="M 15,35 C 5,28 0,18 0,10 C 0,-5 12,-15 25,-15 C 38,-15 50,-5 50,10 C 50,18 45,28 35,35 Z" fill="#facc15" stroke="#eab308" stroke-width="2" />
+        <!-- Bulb Inner Filament Glowing -->
+        <path d="M 18,15 L 25,-2 L 32,15" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" />
+        <circle cx="25" cy="-2" r="3" fill="#ffffff" />
+        <!-- Metal Base -->
+        <rect x="18" y="35" width="14" height="4" rx="1" fill="#94a3b8" />
+        <rect x="19" y="40" width="12" height="4" rx="1" fill="#64748b" />
+        <!-- Glowing rays around bulb -->
+        <line x1="25" y1="-25" x2="25" y2="-35" stroke="#fef08a" stroke-width="4" stroke-linecap="round" />
+        <line x1="5" y1="-15" x2="-5" y2="-22" stroke="#fef08a" stroke-width="4" stroke-linecap="round" />
+        <line x1="45" y1="-15" x2="55" y2="-22" stroke="#fef08a" stroke-width="4" stroke-linecap="round" />
+      </g>
+
+      <!-- Side Ear Antennas with Blue Caps -->
+      <rect x="2" y="70" width="16" height="25" rx="6" fill="#38bdf8" />
+      <rect x="202" y="70" width="16" height="25" rx="6" fill="#38bdf8" />
+      <circle cx="10" cy="82" r="5" fill="#0284c7" />
+      <circle cx="210" cy="82" r="5" fill="#0284c7" />
+
+      <!-- Robot Head (Glossy Rounded White) -->
+      <rect x="15" y="25" width="190" height="135" rx="55" fill="url(#robotBody)" stroke="#e2e8f0" stroke-width="4" />
+      <!-- Head top gloss highlight -->
+      <ellipse cx="110" cy="45" rx="60" ry="12" fill="#ffffff" opacity="0.8" />
+
+      <!-- Visor / Screen Face -->
+      <rect x="35" y="45" width="150" height="95" rx="35" fill="url(#robotVisor)" stroke="#38bdf8" stroke-width="3" />
+
+      <!-- Glowing Cyan Smiling Eyes (◠‿◠) -->
+      <g filter="url(#cyanGlow)">
+        <!-- Left Eye (Happy Inverted Arc) -->
+        <path d="M 55,95 Q 75,68 95,95" stroke="#38bdf8" stroke-width="9" fill="none" stroke-linecap="round" />
+        <!-- Right Eye (Happy Inverted Arc) -->
+        <path d="M 125,95 Q 145,68 165,95" stroke="#38bdf8" stroke-width="9" fill="none" stroke-linecap="round" />
+        <!-- Blue Blush Dots -->
+        <circle cx="50" cy="115" r="6" fill="#06b6d4" opacity="0.7" />
+        <circle cx="170" cy="115" r="6" fill="#06b6d4" opacity="0.7" />
+        <!-- Friendly Small Mouth -->
+        <path d="M 103,115 Q 110,122 117,115" stroke="#38bdf8" stroke-width="4" fill="none" stroke-linecap="round" />
+      </g>
+
+      <!-- Robot Neck Joint -->
+      <rect x="90" y="160" width="40" height="15" rx="6" fill="#64748b" />
+
+      <!-- Robot Body -->
+      <rect x="45" y="175" width="130" height="150" rx="45" fill="url(#robotBody)" stroke="#e2e8f0" stroke-width="3" />
+      <!-- Chest Core Light Badge -->
+      <circle cx="110" cy="225" r="22" fill="#0ea5e9" />
+      <circle cx="110" cy="225" r="16" fill="#38bdf8" />
+      <circle cx="110" cy="225" r="10" fill="#ffffff" />
+
+      <!-- Robot Arms Working on Laptop -->
+      <path d="M 50,195 Q 20,245 60,285 L 90,275" fill="none" stroke="url(#robotBody)" stroke-width="26" stroke-linecap="round" />
+      <path d="M 170,195 Q 200,245 160,285 L 130,275" fill="none" stroke="url(#robotBody)" stroke-width="26" stroke-linecap="round" />
+
+      <!-- Robot Hands on keyboard -->
+      <circle cx="80" cy="275" r="14" fill="#94a3b8" />
+      <circle cx="140" cy="275" r="14" fill="#94a3b8" />
+
+      <!-- ==================== LAPTOP IN FRONT OF ROBOT ==================== -->
+      <g transform="translate(30, 240)">
+        <!-- Laptop Screen (Tilted Perspective) -->
+        <polygon points="40,20 180,10 170,95 30,95" fill="#334155" stroke="#94a3b8" stroke-width="2" />
+        <polygon points="45,25 175,15 165,90 35,90" fill="#1e293b" />
+        <!-- Screen Glowing Display (Code & Charts) -->
+        <polygon points="45,25 175,15 165,90 35,90" fill="#0284c7" opacity="0.85" />
+        <line x1="55" y1="40" x2="110" y2="36" stroke="#fef08a" stroke-width="4" stroke-linecap="round" />
+        <line x1="55" y1="52" x2="145" y2="46" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+        <line x1="55" y1="64" x2="130" y2="59" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" />
+        <line x1="55" y1="76" x2="95" y2="73" stroke="#a7f3d0" stroke-width="3" stroke-linecap="round" />
+
+        <!-- Laptop Base / Keyboard -->
+        <polygon points="10,95 190,95 210,125 -10,125" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2" />
+        <polygon points="15,97 185,97 200,118 0,118" fill="#475569" />
+        <!-- Trackpad -->
+        <rect x="80" y="119" width="40" height="5" rx="1" fill="#94a3b8" />
+      </g>
+    </g>
+
+    <!-- ==================== CHARACTER 3: BOY CELEBRATING IN RED ==================== -->
+    <g id="boyCharacter" transform="translate(1450, 250)">
+      <!-- Red Hoodie Body -->
+      <path d="M 30,120 Q 75,110 120,120 L 135,240 L 15,240 Z" fill="#ef4444" />
+      <!-- White Hoodie Strings & Collar -->
+      <path d="M 55,120 Q 75,145 95,120 Z" fill="#ffffff" />
+      <line x1="65" y1="135" x2="65" y2="165" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+      <line x1="85" y1="135" x2="85" y2="165" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+
+      <!-- Left Arm leaning on desk / holding mini laptop -->
+      <path d="M 30,135 Q 5,175 25,225" fill="none" stroke="#ef4444" stroke-width="28" stroke-linecap="round" />
+      <circle cx="28" cy="225" r="14" fill="#fed7aa" />
+
+      <!-- Right Arm Raised in Victory Celebration (Fist Pump!) -->
+      <path d="M 115,135 Q 140,80 130,35" fill="none" stroke="#ef4444" stroke-width="28" stroke-linecap="round" />
+      <!-- Fist -->
+      <circle cx="130" cy="25" r="16" fill="#fed7aa" />
+      <!-- Thumb & fingers in fist -->
+      <circle cx="124" cy="22" r="5" fill="#fbcfe8" opacity="0.4" />
+
+      <!-- Neck & Head -->
+      <rect x="65" y="105" width="20" height="20" rx="4" fill="#fed7aa" />
+      <circle cx="75" cy="72" r="48" fill="#fed7aa" />
+
+      <!-- Cheeks -->
+      <circle cx="45" cy="85" r="12" fill="#fda4af" opacity="0.6" />
+      <circle cx="105" cy="85" r="12" fill="#fda4af" opacity="0.6" />
+
+      <!-- Expressive Happy Eyes -->
+      <ellipse cx="55" cy="70" rx="9" ry="12" fill="#1e1b4b" />
+      <circle cx="53" cy="66" r="4" fill="#ffffff" />
+      <circle cx="58" cy="74" r="2" fill="#ffffff" />
+
+      <ellipse cx="95" cy="70" rx="9" ry="12" fill="#1e1b4b" />
+      <circle cx="93" cy="66" r="4" fill="#ffffff" />
+      <circle cx="98" cy="74" r="2" fill="#ffffff" />
+
+      <!-- Eyebrows (Excited / Raised) -->
+      <path d="M 46,55 Q 56,48 66,54" stroke="#451a03" stroke-width="3.5" fill="none" stroke-linecap="round" />
+      <path d="M 84,54 Q 94,48 104,55" stroke="#451a03" stroke-width="3.5" fill="none" stroke-linecap="round" />
+
+      <!-- Wide Open Happy Smile / Laughter (D-Shape) -->
+      <path d="M 60,88 Q 75,115 90,88 Z" fill="#e11d48" stroke="#be123c" stroke-width="2" />
+      <!-- White Teeth -->
+      <path d="M 64,88 Q 75,98 86,88 Z" fill="#ffffff" />
+      <!-- Tongue -->
+      <path d="M 68,102 Q 75,98 82,102 Q 75,112 68,102 Z" fill="#fda4af" />
+
+      <!-- Short Spiky Brown Hair -->
+      <path d="M 25,60 C 20,25 45,5 75,5 C 105,5 130,25 125,60 C 120,40 100,20 75,22 C 50,20 30,40 25,60 Z" fill="#451a03" />
+      <!-- Hair Bang Tufts -->
+      <polygon points="45,25 55,42 62,25" fill="#451a03" />
+      <polygon points="62,22 72,40 80,22" fill="#451a03" />
+      <polygon points="80,24 90,43 98,26" fill="#451a03" />
+
+      <!-- Mini Blue Laptop in Front of Boy -->
+      <g transform="translate(-10, 200)">
+        <polygon points="20,10 80,5 75,45 15,45" fill="#0284c7" stroke="#38bdf8" stroke-width="2" />
+        <polygon points="23,13 77,8 72,42 18,42" fill="#e0f2fe" />
+        <!-- Star Logo on Laptop Lid -->
+        <circle cx="45" cy="25" r="6" fill="#ffffff" opacity="0.9" />
+        <!-- Base -->
+        <polygon points="5,45 85,45 95,58 -5,58" fill="#0369a1" />
+      </g>
+    </g>
+
+    <!-- ==================== 7. FLOATING 3D TECH ICONS (From user's uploaded banner) ==================== -->
+    <!-- Icon 1: Blue Mechanical Gear ⚙️ (Top left of girl) -->
+    <g transform="translate(1040, 115) scale(0.9)" filter="url(#softShadow)">
+      <circle cx="25" cy="25" r="22" fill="#3b82f6" />
+      <circle cx="25" cy="25" r="9" fill="#dbeafe" />
+      <!-- 6 Gear Teeth -->
+      <rect x="21" y="-3" width="8" height="10" rx="3" fill="#2563eb" />
+      <rect x="21" y="43" width="8" height="10" rx="3" fill="#2563eb" />
+      <rect x="-3" y="21" width="10" height="8" rx="3" fill="#2563eb" />
+      <rect x="43" y="21" width="10" height="8" rx="3" fill="#2563eb" />
+      <rect x="5" y="5" width="8" height="8" rx="2" fill="#2563eb" transform="rotate(45, 9, 9)" />
+      <rect x="35" y="35" width="8" height="8" rx="2" fill="#2563eb" transform="rotate(45, 39, 39)" />
+      <rect x="35" y="5" width="8" height="8" rx="2" fill="#2563eb" transform="rotate(-45, 39, 9)" />
+      <rect x="5" y="35" width="8" height="8" rx="2" fill="#2563eb" transform="rotate(-45, 9, 39)" />
+      <circle cx="25" cy="25" r="16" fill="#3b82f6" />
+      <circle cx="25" cy="25" r="8" fill="#ffffff" />
+    </g>
+
+    <!-- Icon 2: Red YouTube Play Button ▶️ (Above girl/robot) -->
+    <g transform="translate(1160, 110) scale(0.9)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="56" height="42" rx="14" fill="#ef4444" />
+      <rect x="3" y="3" width="50" height="18" rx="8" fill="#ffffff" opacity="0.25" />
+      <!-- Play Triangle -->
+      <polygon points="22,12 38,21 22,30" fill="#ffffff" />
+    </g>
+
+    <!-- Icon 3: Green Nature Leaf 🍃 (Above Robot right) -->
+    <g transform="translate(1420, 115) scale(0.9)" filter="url(#softShadow)">
+      <path d="M 10,40 C 5,20 20,5 45,5 C 45,30 30,45 10,40 Z" fill="#22c55e" />
+      <path d="M 10,40 Q 25,25 45,5" stroke="#ffffff" stroke-width="2.5" fill="none" />
+    </g>
+
+    <!-- Icon 4: Cyan Internet Globe 🌐 (Above Boy) -->
+    <g transform="translate(1510, 105) scale(0.95)" filter="url(#softShadow)">
+      <circle cx="30" cy="30" r="28" fill="#0284c7" />
+      <circle cx="30" cy="30" r="28" fill="#38bdf8" opacity="0.3" />
+      <!-- Globe Latitude & Longitude Grids -->
+      <ellipse cx="30" cy="30" rx="15" ry="26" fill="none" stroke="#ffffff" stroke-width="3" />
+      <line x1="2" y1="30" x2="58" y2="30" stroke="#ffffff" stroke-width="3" />
+      <line x1="8" y1="18" x2="52" y2="18" stroke="#ffffff" stroke-width="2.5" />
+      <line x1="8" y1="42" x2="52" y2="42" stroke="#ffffff" stroke-width="2.5" />
+      <line x1="30" y1="2" x2="30" y2="58" stroke="#ffffff" stroke-width="3" />
+    </g>
+
+    <!-- Icon 5: Blue Code Button </> (Right side above Boy) -->
+    <g transform="translate(1425, 160) scale(0.85)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="52" height="38" rx="12" fill="#0369a1" />
+      <rect x="2" y="2" width="48" height="34" rx="10" fill="#0284c7" />
+      <!-- < / > Text -->
+      <text x="26" y="25" fill="#ffffff" font-family="monospace, sans-serif" font-weight="900" font-size="18" text-anchor="middle">&lt;/&gt;</text>
+    </g>
+
+    <!-- Icon 6: Golden Star on far right -->
+    <g transform="translate(1630, 115) scale(0.85)" filter="url(#softShadow)">
+      <polygon points="25,2 32,18 49,18 35,29 40,46 25,36 10,46 15,29 1,18 18,18" fill="#facc15" stroke="#eab308" stroke-width="2" />
+    </g>
+  </g>
+</svg>

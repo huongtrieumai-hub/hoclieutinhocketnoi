@@ -575,7 +575,7 @@ export default function App() {
                 backgroundSize: bannerConfig.bgSize || 'cover',
                 backgroundRepeat: 'no-repeat',
               }}
-              className={`relative overflow-hidden rounded-3xl p-6 md:p-10 text-white shadow-2xl border-b-4 border-[#F08200] min-h-[220px] flex items-center transition-all duration-300 ${
+              className={`relative overflow-hidden rounded-3xl p-6 md:p-10 text-white shadow-2xl border-b-4 border-[#F08200] min-h-[260px] md:min-h-[300px] flex items-center transition-all duration-300 ${
                 !bannerConfig.imageUrl
                   ? 'bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200]'
                   : 'bg-slate-900'
@@ -597,7 +597,7 @@ export default function App() {
                 />
               )}
 
-              <div className="relative z-10 max-w-2xl space-y-3">
+              <div className="relative z-10 max-w-2xl space-y-3 bg-gradient-to-r from-sky-950/40 via-sky-900/20 to-transparent sm:bg-transparent rounded-2xl p-3 sm:p-0 backdrop-blur-[2px] sm:backdrop-blur-none">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#FFF0AD] text-[#0F2C59] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
                   <Sparkles className="w-4 h-4 text-[#F08200] animate-spin" />
                   <span>{bannerConfig.tagline || 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống'}</span>

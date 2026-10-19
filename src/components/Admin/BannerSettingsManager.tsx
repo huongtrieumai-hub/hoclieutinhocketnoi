@@ -29,6 +29,11 @@ interface Props {
 // Curated educational banner templates for quick preview/selection
 const SAMPLE_BANNERS = [
   {
+    name: '🌟 Banner Học Liệu Tin Học (Ảnh bạn tải lên)',
+    url: '/banner.svg',
+    description: 'Bầu trời xanh, Robot AI thông minh, học sinh vui học & máy tính',
+  },
+  {
     name: 'Phòng Tin Học Vui Nhộn',
     url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&auto=format&fit=crop&q=80',
     description: 'Lớp học hiện đại, học sinh tương tác học tập',
@@ -123,24 +128,24 @@ export const BannerSettingsManager: React.FC<Props> = ({
 
   // Reset to default
   const handleResetToDefault = () => {
-    if (confirm('Thầy cô có muốn khôi phục lại Banner về giao diện chuyển màu đỏ cam chuẩn ban đầu?')) {
-      setImageUrl('');
-      setBgPosition('center');
+    if (confirm('Thầy cô có muốn khôi phục lại Banner về ảnh chuẩn theo thiết kế SGK Kết Nối Tri Thức?')) {
+      setImageUrl(DEFAULT_BANNER_CONFIG.imageUrl || '/banner.svg');
+      setBgPosition('right');
       setBgSize('cover');
-      setOverlayColor('gradient');
+      setOverlayColor('none');
       setOpacity(85);
       setHeadline(DEFAULT_BANNER_CONFIG.headline || 'Học Liệu Tin Học 3–4–5!');
       setTagline(DEFAULT_BANNER_CONFIG.tagline || 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống');
       setSubtext(DEFAULT_BANNER_CONFIG.subtext || '');
-      setShowMascot(true);
+      setShowMascot(false);
 
       const def: BannerConfig = {
         ...DEFAULT_BANNER_CONFIG,
-        imageUrl: '',
+        imageUrl: '/banner.svg',
         updatedAt: new Date().toISOString(),
       };
       onSaveBannerConfig(def);
-      setUploadSuccessMsg('Đã khôi phục banner chuẩn ban đầu!');
+      setUploadSuccessMsg('Đã khôi phục banner chuẩn SGK thành công!');
       setTimeout(() => setUploadSuccessMsg(null), 3000);
     }
   };
