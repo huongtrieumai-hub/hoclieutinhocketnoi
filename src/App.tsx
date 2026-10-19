@@ -3,6 +3,7 @@ import { GradeLevel, Lesson, Topic, UserProgress, UserAccount } from './types';
 import { StorageService } from './data/storage';
 import { AuthService, DEMO_ACCOUNTS } from './data/authData';
 import { Navbar } from './components/Navbar';
+
 import { GradeSelector } from './components/GradeSelector';
 import { LessonCard } from './components/LessonCard';
 import { LessonHeader } from './components/LessonDetail/LessonHeader';
@@ -545,23 +546,23 @@ export default function App() {
           /* VIEW 2: STUDENT HOME VIEW */
           <div className="space-y-8">
             {/* Friendly Hero Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 p-6 md:p-10 text-white shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200] p-6 md:p-10 text-white shadow-2xl border-b-4 border-[#F08200]">
               <div className="relative z-10 max-w-2xl space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-xs rounded-full text-xs font-black uppercase tracking-wider text-amber-200">
-                  <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#FFF0AD] text-[#0F2C59] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
+                  <Sparkles className="w-4 h-4 text-[#F08200] animate-spin" />
                   <span>Bộ Sách Kết Nối Tri Thức Với Cuộc Sống</span>
                 </div>
 
                 {currentUser ? (
                   <div>
-                    <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight">
+                    <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
                       Chào{' '}
                       {currentUser.fullName?.startsWith('Cô ') || currentUser.fullName?.startsWith('Thầy ')
                         ? currentUser.fullName.replace(/Hương/g, 'Hường')
                         : `bạn ${currentUser.fullName?.replace(/^Thầy\s+Quản\s+Trị\s+Hệ\s+Thống/i, 'Quản Trị Hệ Thống').replace(/Hương/g, 'Hường')}`}{' '}
                       {currentUser.avatar}
                     </h1>
-                    <p className="text-sm sm:text-base text-blue-100 font-semibold leading-relaxed mt-1">
+                    <p className="text-sm sm:text-base text-[#FFF0AD] font-bold leading-relaxed mt-1">
                       {currentUser.role === 'admin' || currentUser.role === 'teacher'
                         ? 'Chúc Cô một ngày giảng dạy và làm việc hiệu quả, đồng hành cùng các em học sinh sáng tạo!'
                         : 'Chúc em một ngày học tập môn Tin học thật hứng khởi, tích lũy thêm nhiều sao vàng và thực hành sáng tạo!'}
@@ -569,10 +570,10 @@ export default function App() {
                   </div>
                 ) : (
                   <div>
-                    <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight">
-                      Chào Mừng Đến Với Học Liệu Tin Học 3–4–5!
+                    <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
+                      Học Liệu Tin Học 3–4–5!
                     </h1>
-                    <p className="text-sm sm:text-base text-blue-100 font-semibold leading-relaxed mt-1">
+                    <p className="text-sm sm:text-base text-[#FFF0AD] font-bold leading-relaxed mt-1">
                       Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím &amp; chuột, trò chơi ôn tập và tương tác cùng <strong>Robot Tin Học</strong>!
                     </p>
                   </div>
@@ -586,9 +587,9 @@ export default function App() {
                           setLoginModalRole('student');
                           setIsLoginModalOpen(true);
                         }}
-                        className="px-6 py-3 bg-white hover:bg-slate-100 text-blue-900 rounded-2xl font-black text-xs sm:text-sm shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer"
+                        className="px-6 py-3 bg-[#FFF0AD] hover:bg-white text-[#0F2C59] rounded-2xl font-black text-xs sm:text-sm shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer border-2 border-[#F08200]"
                       >
-                        <LogIn className="w-4 h-4 text-blue-600" />
+                        <LogIn className="w-4 h-4 text-[#C8102E]" />
                         <span>Đăng Nhập Tài Khoản</span>
                       </button>
 
@@ -597,14 +598,14 @@ export default function App() {
                           setLoginModalRole('student');
                           setIsLoginModalOpen(true);
                         }}
-                        className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer"
+                        className="px-6 py-3 bg-[#C8102E] hover:bg-[#a00c23] text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer border-2 border-[#FFF0AD]"
                       >
                         <UserCheck className="w-4 h-4" />
                         <span>Đăng Ký Tài Khoản Mới</span>
                       </button>
                     </>
                   ) : (
-                    <div className="flex items-center gap-2 text-white/95 text-xs sm:text-sm font-bold bg-white/15 px-4 py-2.5 rounded-2xl backdrop-blur-xs">
+                    <div className="flex items-center gap-2 text-white/95 text-xs sm:text-sm font-bold bg-[#0F2C59]/60 border border-[#F08200] px-4 py-2.5 rounded-2xl backdrop-blur-xs">
                       <span>✨ Em hãy chọn bài học ở danh sách bên dưới để bắt đầu học nhé!</span>
                     </div>
                   )}
@@ -656,8 +657,8 @@ export default function App() {
                   onClick={() => setSelectedTopicId('all')}
                   className={`px-4 py-2 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer ${
                     selectedTopicId === 'all'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200] text-white shadow-md ring-2 ring-[#F08200]'
+                      : 'bg-slate-100 text-slate-700 hover:bg-[#FFF0AD]/50 border border-slate-200'
                   }`}
                 >
                   Tất cả chủ đề ✨
@@ -670,8 +671,8 @@ export default function App() {
                       onClick={() => setSelectedTopicId(top.id)}
                       className={`px-4 py-2 rounded-2xl text-xs font-black transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                         isSelected
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200] text-white shadow-md ring-2 ring-[#F08200]'
+                          : 'bg-slate-100 text-slate-700 hover:bg-[#FFF0AD]/50 border border-slate-200'
                       }`}
                     >
                       <span>{top.icon}</span>

@@ -58,7 +58,7 @@ export const GradeSelector: React.FC<Props> = ({
               item.borderColor
             } ${
               isSelected
-                ? 'scale-103 ring-4 ring-amber-300 shadow-2xl'
+                ? 'scale-103 ring-4 ring-[#F08200] shadow-2xl'
                 : 'hover:scale-101 hover:shadow-xl opacity-90'
             }`}
           >

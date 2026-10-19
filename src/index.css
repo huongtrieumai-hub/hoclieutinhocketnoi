@@ -37,6 +37,11 @@
   }
 }
 
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
 .animate-fall-star {
   animation: fall-star linear forwards;
 }
@@ -48,3 +53,77 @@
 .animate-fade-in {
   animation: fade-in 0.25s ease-out forwards;
 }
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* Custom Palette & Design System Utilities */
+.bg-brand-navy {
+  background-color: #0F2C59;
+}
+
+.bg-brand-red {
+  background-color: #C8102E;
+}
+
+.bg-brand-orange {
+  background-color: #F08200;
+}
+
+.bg-brand-gold {
+  background-color: #FFF0AD;
+}
+
+.text-brand-navy {
+  color: #0F2C59;
+}
+
+.text-brand-red {
+  color: #C8102E;
+}
+
+.text-brand-orange {
+  color: #F08200;
+}
+
+.border-brand-orange {
+  border-color: #F08200;
+}
+
+.border-brand-gold {
+  border-color: #FFF0AD;
+}
+
+.glow-orange {
+  box-shadow: 0 8px 25px -4px rgba(240, 130, 0, 0.35);
+}
+
+.glow-red {
+  box-shadow: 0 8px 25px -4px rgba(200, 16, 46, 0.35);
+}
+
+.glow-navy {
+  box-shadow: 0 8px 25px -4px rgba(15, 44, 89, 0.35);
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+

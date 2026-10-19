@@ -121,7 +121,27 @@ export const StorageService = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.TOPICS);
       if (data) {
-        return JSON.parse(data);
+        const stored: Topic[] = JSON.parse(data);
+        // Ensure all INITIAL_TOPICS exist in stored
+        const merged = [...stored];
+        let hasNew = false;
+        INITIAL_TOPICS.forEach((init) => {
+          const idx = merged.findIndex((t) => t.id === init.id || (t.grade === init.grade && t.code === init.code));
+          if (idx >= 0) {
+            // Update name to official standard if outdated
+            if (merged[idx].name !== init.name) {
+              merged[idx] = { ...merged[idx], name: init.name, description: init.description || merged[idx].description };
+              hasNew = true;
+            }
+          } else {
+            merged.push(init);
+            hasNew = true;
+          }
+        });
+        if (hasNew) {
+          localStorage.setItem(STORAGE_KEYS.TOPICS, JSON.stringify(merged));
+        }
+        return merged;
       }
     } catch (e) {
       console.error('Error reading topics from storage:', e);

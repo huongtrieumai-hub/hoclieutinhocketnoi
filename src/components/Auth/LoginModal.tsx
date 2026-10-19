@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserAccount, GradeLevel } from '../../types';
 import { AuthService, DEMO_ACCOUNTS } from '../../data/authData';
+
 import {
   Sparkles,
   User,
@@ -277,7 +278,6 @@ export const LoginModal: React.FC<Props> = ({
 
         {/* 3D EDUCATIONAL HERO HEADER */}
         <div className="relative p-6 sm:p-7 bg-gradient-to-r from-blue-600 via-emerald-600 to-amber-500 text-white overflow-hidden">
-          {/* Subtle background decorative shapes */}
           <div className="absolute -right-6 -bottom-8 opacity-20 pointer-events-none text-9xl">
             💻
           </div>
