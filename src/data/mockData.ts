@@ -222,7 +222,7 @@ export const INITIAL_TOPICS: Topic[] = [
     code: 'F',
     name: 'Chủ đề 6: Giải quyết vấn đề với sự trợ giúp của máy tính',
     description: 'Làm quen với thuật toán, câu lệnh khối và lập trình trò chơi Scratch vui nhộn.',
-    icon: '🐱',
+    icon: '💻',
     color: 'from-rose-500 to-orange-500',
   },
 ];
