@@ -8,7 +8,7 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { Lesson, Topic, StudentScoreRecord, UserProgress, StudySessionRecord, SchoolClass, UserAccount } from '../types';
+import { Lesson, Topic, StudentScoreRecord, UserProgress, StudySessionRecord, SchoolClass, UserAccount, BannerConfig } from '../types';
 import { INITIAL_LESSONS, INITIAL_TOPICS } from '../data/mockData';
 import { INITIAL_STUDY_SESSIONS } from '../data/mockStudySessions';
 
@@ -32,6 +32,7 @@ const COLLECTIONS = {
   PROGRESS: 'userProgress',
   USERS: 'users',
   CLASSES: 'classes',
+  SETTINGS: 'settings',
 };
 
 export const FirestoreService = {
@@ -127,10 +128,25 @@ export const FirestoreService = {
   },
 
   // --- TOPICS ---
+  async standardizeAndSyncTopics(): Promise<void> {
+    const path = COLLECTIONS.TOPICS;
+    try {
+      for (const topic of INITIAL_TOPICS) {
+        await setDoc(doc(db, COLLECTIONS.TOPICS, topic.id), topic);
+      }
+      console.log('[Firestore] Standardized and synced all 18 topics to Firestore.');
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, path);
+    }
+  },
+
   async getTopics(): Promise<Topic[]> {
     const path = COLLECTIONS.TOPICS;
     try {
       const snap = await getDocs(collection(db, path));
+      if (snap.empty) {
+        return INITIAL_TOPICS;
+      }
       return snap.docs.map((d) => d.data() as Topic);
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, path);
@@ -143,7 +159,42 @@ export const FirestoreService = {
       collection(db, path),
       (snap) => {
         const list = snap.docs.map((d) => d.data() as Topic);
-        onUpdate(list);
+
+        // Normalize topics ensuring all 18 standard topics exist with official SGK names
+        const mergedMap = new Map<string, Topic>();
+        INITIAL_TOPICS.forEach((init) => mergedMap.set(init.id, { ...init }));
+
+        list.forEach((t) => {
+          const init = mergedMap.get(t.id);
+          let cleanName = t.name;
+
+          // If legacy letter naming is detected e.g. "Chủ đề A:", "Chủ đề B:" or truncated text
+          if (/Chủ đề [A-F]/i.test(cleanName) || (cleanName.includes('tìm kiếm thông tin') && !cleanName.includes('và trao đổi'))) {
+            if (init) {
+              cleanName = init.name;
+              // Clean up in Firestore in background
+              setDoc(doc(db, COLLECTIONS.TOPICS, t.id), { ...t, name: cleanName }).catch(console.warn);
+            }
+          }
+
+          if (init) {
+            mergedMap.set(t.id, { ...init, ...t, name: cleanName });
+          } else {
+            mergedMap.set(t.id, t);
+          }
+        });
+
+        // If Firestore had missing standard topics (e.g. only 4 topics existed), write missing ones
+        if (list.length < INITIAL_TOPICS.length) {
+          INITIAL_TOPICS.forEach((init) => {
+            if (!list.some((d) => d.id === init.id)) {
+              setDoc(doc(db, COLLECTIONS.TOPICS, init.id), init).catch(console.warn);
+            }
+          });
+        }
+
+        const result = Array.from(mergedMap.values());
+        onUpdate(result);
       },
       (error) => {
         handleFirestoreError(error, OperationType.LIST, path);
@@ -322,5 +373,43 @@ export const FirestoreService = {
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }
+  },
+
+  // --- BANNER CONFIGURATION ---
+  async getBannerConfig(): Promise<BannerConfig | null> {
+    const path = `${COLLECTIONS.SETTINGS}/bannerConfig`;
+    try {
+      const snap = await getDoc(doc(db, COLLECTIONS.SETTINGS, 'bannerConfig'));
+      if (snap.exists()) {
+        return snap.data() as BannerConfig;
+      }
+      return null;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.GET, path);
+    }
+  },
+
+  async saveBannerConfig(config: BannerConfig): Promise<void> {
+    const path = `${COLLECTIONS.SETTINGS}/bannerConfig`;
+    try {
+      await setDoc(doc(db, COLLECTIONS.SETTINGS, 'bannerConfig'), config);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, path);
+    }
+  },
+
+  subscribeBannerConfig(onUpdate: (config: BannerConfig) => void): () => void {
+    const path = `${COLLECTIONS.SETTINGS}/bannerConfig`;
+    return onSnapshot(
+      doc(db, COLLECTIONS.SETTINGS, 'bannerConfig'),
+      (snap) => {
+        if (snap.exists()) {
+          onUpdate(snap.data() as BannerConfig);
+        }
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, path);
+      }
+    );
   },
 };

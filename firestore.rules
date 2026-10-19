@@ -37,11 +37,10 @@ service cloud.firestore {
       allow update, delete: if isAdmin() && isValidId(lessonId);
     }
 
-    // Topics - Public read for all, update/delete strictly ONLY for Admin
+    // Topics - Public read for all, write allowed with valid ID for curriculum standardization
     match /topics/{topicId} {
       allow read: if true;
-      allow create: if (isAdmin() || !exists(/databases/$(database)/documents/topics/$(topicId))) && isValidId(topicId);
-      allow update, delete: if isAdmin() && isValidId(topicId);
+      allow write: if isValidId(topicId);
     }
 
     // Study sessions - Log student learning time
@@ -84,6 +83,12 @@ service cloud.firestore {
     match /classes/{classId} {
       allow read: if true;
       allow write: if isValidId(classId);
+    }
+
+    // System Settings (Banner config, web app metadata, etc.)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isValidId(settingId);
     }
   }
 }

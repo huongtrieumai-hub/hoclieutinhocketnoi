@@ -334,3 +334,28 @@ export interface StudentLearnerSummary {
   lastActive: string;
   status: 'active_today' | 'active_this_week' | 'inactive';
 }
+
+export interface BannerConfig {
+  imageUrl?: string;
+  opacity?: number; // 0 to 100 for overlay
+  overlayColor?: 'gradient' | 'dark' | 'light' | 'none';
+  bgPosition?: 'center' | 'right' | 'left' | 'top' | 'bottom';
+  bgSize?: 'cover' | 'contain' | 'auto';
+  headline?: string;
+  tagline?: string;
+  subtext?: string;
+  showMascot?: boolean;
+  updatedAt?: string;
+}
+
+export const DEFAULT_BANNER_CONFIG: BannerConfig = {
+  imageUrl: '',
+  opacity: 85,
+  overlayColor: 'gradient',
+  bgPosition: 'center',
+  bgSize: 'cover',
+  headline: 'Học Liệu Tin Học 3–4–5!',
+  tagline: 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống',
+  subtext: 'Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím & chuột, trò chơi ôn tập và tương tác cùng Robot Tin Học!',
+  showMascot: true,
+};

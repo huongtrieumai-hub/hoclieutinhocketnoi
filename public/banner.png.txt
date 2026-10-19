@@ -1,0 +1,5 @@
+/* eslint-disable */
+import { Image } from 'lucide-react';
+// The uploaded image has been saved to the public folder as banner.png
+// You can use it in your components like this:
+// <img src="/banner.png" alt="Banner" />

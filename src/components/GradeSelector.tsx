@@ -16,7 +16,7 @@ const GRADE_INFO = [
     mascot: '💻',
     bgGradient: 'from-blue-500 via-sky-500 to-cyan-400',
     borderColor: 'border-blue-400',
-    tag: 'Chủ đề A - E',
+    tag: 'Chủ đề 1 – 6',
   },
   {
     grade: 4 as GradeLevel,
@@ -25,7 +25,7 @@ const GRADE_INFO = [
     mascot: '🖥️',
     bgGradient: 'from-emerald-500 via-teal-500 to-green-400',
     borderColor: 'border-emerald-400',
-    tag: 'Chủ đề A - E',
+    tag: 'Chủ đề 1 – 6',
   },
   {
     grade: 5 as GradeLevel,
@@ -34,7 +34,7 @@ const GRADE_INFO = [
     mascot: '🐱',
     bgGradient: 'from-amber-500 via-orange-500 to-rose-400',
     borderColor: 'border-amber-400',
-    tag: 'Chủ đề C - F',
+    tag: 'Chủ đề 1 – 6',
   },
 ];
 

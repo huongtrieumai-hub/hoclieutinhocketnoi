@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { CloudinaryService } from '../../services/cloudinaryService';
+import { INITIAL_TOPICS } from '../../data/mockData';
 import {
   Lesson,
   Topic,
@@ -67,7 +68,36 @@ export const LessonEditorModal: React.FC<Props> = ({
 
   // A. THÔNG TIN BÀI HỌC
   const [grade, setGrade] = useState<3 | 4 | 5>(initialLesson?.grade || 3);
-  const [topicId, setTopicId] = useState(initialLesson?.topicId || topics[0]?.id || 'top-3-a');
+
+  // Guarantee that ALL 6 official topics for this grade are always present with official textbook names
+  const gradeTopics = useMemo(() => {
+    const baseForGrade = INITIAL_TOPICS.filter((t) => t.grade === grade);
+    return baseForGrade.map((base) => {
+      const found = topics.find(
+        (t) => t.id === base.id || (t.grade === grade && t.code === base.code)
+      );
+      if (!found) return base;
+      let displayName = found.name;
+      if (/Chủ đề [A-F]/i.test(displayName) || (displayName.includes('tìm kiếm thông tin') && !displayName.includes('và trao đổi'))) {
+        displayName = base.name;
+      }
+      return {
+        ...base,
+        ...found,
+        name: displayName,
+      };
+    });
+  }, [topics, grade]);
+
+  const [topicId, setTopicId] = useState(
+    initialLesson?.topicId || `top-${initialLesson?.grade || 3}-a`
+  );
+
+  useEffect(() => {
+    if (gradeTopics.length > 0 && !gradeTopics.some((t) => t.id === topicId)) {
+      setTopicId(gradeTopics[0].id);
+    }
+  }, [grade, gradeTopics, topicId]);
   const [title, setTitle] = useState(initialLesson?.title || '');
   const [period, setPeriod] = useState(initialLesson?.period || '');
   const [description, setDescription] = useState(initialLesson?.description || '');
@@ -410,19 +440,19 @@ export const LessonEditorModal: React.FC<Props> = ({
                 </div>
 
                 <div>
-                  <label className="block font-black text-slate-700 mb-1">2. Thuộc Chủ Đề (SGK):</label>
+                  <label className="block font-black text-slate-700 mb-1">
+                    2. Thuộc Chủ Đề (SGK Kết Nối Tri Thức):
+                  </label>
                   <select
                     value={topicId}
                     onChange={(e) => setTopicId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400"
                   >
-                    {topics
-                      .filter((t) => t.grade === grade)
-                      .map((top) => (
-                        <option key={top.id} value={top.id}>
-                          {top.name}
-                        </option>
-                      ))}
+                    {gradeTopics.map((top) => (
+                      <option key={top.id} value={top.id}>
+                        {top.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

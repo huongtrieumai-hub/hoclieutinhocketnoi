@@ -1,4 +1,4 @@
-import { Lesson, Topic, StudentScoreRecord, UserProgress, StudySessionRecord, StudentLearnerSummary } from '../types';
+import { Lesson, Topic, StudentScoreRecord, UserProgress, StudySessionRecord, StudentLearnerSummary, BannerConfig, DEFAULT_BANNER_CONFIG } from '../types';
 import { INITIAL_LESSONS, INITIAL_TOPICS } from './mockData';
 import { INITIAL_STUDY_SESSIONS, INITIAL_LEARNERS_SUMMARY } from './mockStudySessions';
 import { FirestoreService } from '../services/firestoreService';
@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   ADMIN_PIN: 'hoc_lieu_tin_hoc_pin_v1',
   STUDY_SESSIONS: 'hoc_lieu_tin_hoc_study_sessions_v1',
   LEARNERS_SUMMARY: 'hoc_lieu_tin_hoc_learners_summary_v1',
+  BANNER: 'hoc_lieu_tin_hoc_banner_config_v1',
 };
 
 // Default teacher PIN
@@ -128,8 +129,8 @@ export const StorageService = {
         INITIAL_TOPICS.forEach((init) => {
           const idx = merged.findIndex((t) => t.id === init.id || (t.grade === init.grade && t.code === init.code));
           if (idx >= 0) {
-            // Update name to official standard if outdated
-            if (merged[idx].name !== init.name) {
+            // Update name to official standard if outdated or uses old letter scheme
+            if (merged[idx].name !== init.name || /Chủ đề [A-F]/i.test(merged[idx].name)) {
               merged[idx] = { ...merged[idx], name: init.name, description: init.description || merged[idx].description };
               hasNew = true;
             }
@@ -485,6 +486,30 @@ export const StorageService = {
     } catch (e) {
       return { success: false, message: `Lỗi đọc tệp: ${(e as Error).message}`, count: 0 };
     }
+  },
+
+  // --- BANNER CONFIG ---
+  getBannerConfig(): BannerConfig {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.BANNER);
+      if (data) {
+        return { ...DEFAULT_BANNER_CONFIG, ...JSON.parse(data) };
+      }
+    } catch (e) {
+      console.error('Error reading banner config:', e);
+    }
+    return DEFAULT_BANNER_CONFIG;
+  },
+
+  saveBannerConfig(config: BannerConfig): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.BANNER, JSON.stringify(config));
+    } catch (e) {
+      console.error('Error saving banner config to storage:', e);
+    }
+    FirestoreService.saveBannerConfig(config).catch((err) =>
+      console.warn('[StorageService] Error syncing banner config to Firestore:', err)
+    );
   },
 
   resetToDefaultMockData(): void {

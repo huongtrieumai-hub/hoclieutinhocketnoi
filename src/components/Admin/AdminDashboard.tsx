@@ -8,6 +8,9 @@ import { LearnerMonitoringView } from './LearnerMonitoringView';
 import { StudentAccountsManager } from './StudentAccountsManager';
 import { FirebaseAdminClaimsGuideModal } from './FirebaseAdminClaimsGuideModal';
 import { CloudinaryMediaUploader } from '../CloudinaryMediaUploader';
+import { TopicManager } from './TopicManager';
+import { BannerSettingsManager } from './BannerSettingsManager';
+import { BannerConfig } from '../../types';
 import {
   BookOpen,
   Plus,
@@ -37,6 +40,7 @@ import {
   Users,
   GraduationCap,
   ShieldCheck,
+  Image as ImageIcon,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -44,6 +48,8 @@ interface Props {
   lessons: Lesson[];
   topics: Topic[];
   currentUser?: UserAccount | null;
+  bannerConfig: BannerConfig;
+  onSaveBannerConfig: (config: BannerConfig) => void;
   onRefreshData: () => void;
   onExitAdmin: () => void;
   onPreviewLesson: (lesson: Lesson) => void;
@@ -53,11 +59,13 @@ export const AdminDashboard: React.FC<Props> = ({
   lessons,
   topics,
   currentUser,
+  bannerConfig,
+  onSaveBannerConfig,
   onRefreshData,
   onExitAdmin,
   onPreviewLesson,
 }) => {
-  const [activeTab, setActiveTab] = useState<'lessons' | 'learners' | 'scores' | 'accounts' | 'backup' | 'cloudinary'>('lessons');
+  const [activeTab, setActiveTab] = useState<'lessons' | 'topics' | 'learners' | 'scores' | 'accounts' | 'backup' | 'cloudinary' | 'banner'>('lessons');
   const [filterGrade, setFilterGrade] = useState<GradeLevel | 'all'>('all');
   const [filterTopic, setFilterTopic] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -292,6 +300,18 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('topics')}
+              className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer ${
+                activeTab === 'topics'
+                  ? 'bg-amber-400 text-slate-900 shadow-md scale-102'
+                  : 'text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <Layers className="w-4 h-4 text-amber-300" />
+              <span>Quản Lý 6 Chủ Đề SGK ({topics.length}) 📁</span>
+            </button>
+
+            <button
               onClick={() => {
                 setSelectedLessonForMonitoring(null);
                 setActiveTab('learners');
@@ -355,6 +375,18 @@ export const AdminDashboard: React.FC<Props> = ({
             >
               <UploadCloud className="w-4 h-4 text-cyan-300" />
               <span>Lưu Trữ Đám Mây Cloudinary ☁️</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('banner')}
+              className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer ${
+                activeTab === 'banner'
+                  ? 'bg-amber-400 text-slate-900 shadow-md scale-102'
+                  : 'text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <ImageIcon className="w-4 h-4 text-rose-300" />
+              <span>Cài Đặt Banner Web 🖼️</span>
             </button>
           </div>
         </div>
@@ -548,7 +580,7 @@ export const AdminDashboard: React.FC<Props> = ({
                             </td>
 
                             <td className="py-3 px-4 text-indigo-700 font-bold">
-                              {topic?.name || 'Chủ đề A'}
+                              {topic?.name || 'Chủ đề 1: Máy tính và em'}
                             </td>
 
                             <td className="py-3 px-4">
@@ -695,6 +727,15 @@ export const AdminDashboard: React.FC<Props> = ({
           </div>
         )}
 
+        {/* TAB: QUẢN LÝ CÁC CHỦ ĐỀ SGK (6 CHỦ ĐỀ) */}
+        {activeTab === 'topics' && (
+          <TopicManager
+            topics={topics}
+            lessons={lessons}
+            onRefreshData={onRefreshData}
+          />
+        )}
+
         {/* TAB 2: LEARNER MONITORING & STUDY TIME */}
         {activeTab === 'learners' && (
           <LearnerMonitoringView
@@ -826,6 +867,14 @@ export const AdminDashboard: React.FC<Props> = ({
               />
             </div>
           </div>
+        )}
+
+        {/* TAB 6: CÀI ĐẶT BANNER WEB APP */}
+        {activeTab === 'banner' && (
+          <BannerSettingsManager
+            bannerConfig={bannerConfig}
+            onSaveBannerConfig={onSaveBannerConfig}
+          />
         )}
       </div>
 

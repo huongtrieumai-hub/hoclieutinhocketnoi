@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { GradeLevel, Lesson, Topic, UserProgress, UserAccount } from './types';
+import { GradeLevel, Lesson, Topic, UserProgress, UserAccount, BannerConfig, DEFAULT_BANNER_CONFIG } from './types';
 import { StorageService } from './data/storage';
 import { AuthService, DEMO_ACCOUNTS } from './data/authData';
 import { Navbar } from './components/Navbar';
@@ -70,12 +70,19 @@ export default function App() {
 
   // Admin view state
   const [isLoggedInAdmin, setIsLoggedInAdmin] = useState(false);
+  const [bannerConfig, setBannerConfig] = useState<BannerConfig>(() => StorageService.getBannerConfig());
+
+  const handleSaveBannerConfig = (config: BannerConfig) => {
+    setBannerConfig(config);
+    StorageService.saveBannerConfig(config);
+  };
 
   const refreshAllData = () => {
     setLessons(StorageService.getLessons());
     setTopics(StorageService.getTopics());
     setProgress(StorageService.getProgress());
     setCurrentUser(AuthService.getCurrentUser());
+    setBannerConfig(StorageService.getBannerConfig());
   };
 
   // Grade Statistics (total & completed)
@@ -100,7 +107,9 @@ export default function App() {
 
   // Topics for the selected grade
   const currentGradeTopics = useMemo(() => {
-    return topics.filter((t) => t.grade === selectedGrade);
+    return topics
+      .filter((t) => t.grade === selectedGrade)
+      .sort((a, b) => a.id.localeCompare(b.id));
   }, [topics, selectedGrade]);
 
   // Filtered lessons for display
@@ -170,6 +179,16 @@ export default function App() {
       }
     );
 
+    // Live real-time subscription for banner configuration from Firestore
+    const unsubBanner = FirestoreService.subscribeBannerConfig(
+      (firestoreBanner) => {
+        if (firestoreBanner) {
+          setBannerConfig(firestoreBanner);
+          StorageService.saveBannerConfig(firestoreBanner);
+        }
+      }
+    );
+
     const user = AuthService.getCurrentUser();
     if (user) {
       FirestoreService.getUserProgress(user.id)
@@ -184,6 +203,7 @@ export default function App() {
     return () => {
       unsubLessons();
       unsubTopics();
+      unsubBanner();
     };
   }, []);
 
@@ -421,6 +441,8 @@ export default function App() {
         lessons={lessons}
         topics={topics}
         currentUser={currentUser}
+        bannerConfig={bannerConfig}
+        onSaveBannerConfig={handleSaveBannerConfig}
         onRefreshData={refreshAllData}
         onExitAdmin={() => setIsLoggedInAdmin(false)}
         onPreviewLesson={(l) => {
@@ -546,11 +568,39 @@ export default function App() {
           /* VIEW 2: STUDENT HOME VIEW */
           <div className="space-y-8">
             {/* Friendly Hero Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200] p-6 md:p-10 text-white shadow-2xl border-b-4 border-[#F08200]">
+            <div
+              style={{
+                backgroundImage: bannerConfig.imageUrl ? `url("${bannerConfig.imageUrl}")` : undefined,
+                backgroundPosition: bannerConfig.bgPosition || 'center',
+                backgroundSize: bannerConfig.bgSize || 'cover',
+                backgroundRepeat: 'no-repeat',
+              }}
+              className={`relative overflow-hidden rounded-3xl p-6 md:p-10 text-white shadow-2xl border-b-4 border-[#F08200] min-h-[220px] flex items-center transition-all duration-300 ${
+                !bannerConfig.imageUrl
+                  ? 'bg-gradient-to-r from-[#0F2C59] via-[#C8102E] to-[#F08200]'
+                  : 'bg-slate-900'
+              }`}
+            >
+              {/* Color Overlay Layer for perfect text contrast and legibility without distorting character */}
+              {bannerConfig.imageUrl && bannerConfig.overlayColor !== 'none' && (
+                <div
+                  style={{
+                    background:
+                      bannerConfig.overlayColor === 'dark'
+                        ? 'rgba(15, 23, 42, 0.75)'
+                        : bannerConfig.overlayColor === 'light'
+                        ? 'rgba(255, 255, 255, 0.75)'
+                        : 'linear-gradient(to right, rgba(15, 44, 89, 0.92) 0%, rgba(200, 16, 46, 0.78) 55%, rgba(240, 130, 0, 0.65) 100%)',
+                    opacity: (bannerConfig.opacity ?? 80) / 100,
+                  }}
+                  className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300"
+                />
+              )}
+
               <div className="relative z-10 max-w-2xl space-y-3">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#FFF0AD] text-[#0F2C59] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
                   <Sparkles className="w-4 h-4 text-[#F08200] animate-spin" />
-                  <span>Bộ Sách Kết Nối Tri Thức Với Cuộc Sống</span>
+                  <span>{bannerConfig.tagline || 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống'}</span>
                 </div>
 
                 {currentUser ? (
@@ -571,10 +621,14 @@ export default function App() {
                 ) : (
                   <div>
                     <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
-                      Học Liệu Tin Học 3–4–5!
+                      {bannerConfig.headline || 'Học Liệu Tin Học 3–4–5!'}
                     </h1>
                     <p className="text-sm sm:text-base text-[#FFF0AD] font-bold leading-relaxed mt-1">
-                      Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím &amp; chuột, trò chơi ôn tập và tương tác cùng <strong>Robot Tin Học</strong>!
+                      {bannerConfig.subtext || (
+                        <>
+                          Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím &amp; chuột, trò chơi ôn tập và tương tác cùng <strong>Robot Tin Học</strong>!
+                        </>
+                      )}
                     </p>
                   </div>
                 )}
@@ -613,9 +667,11 @@ export default function App() {
               </div>
 
               {/* Decorative 3D Mascot */}
-              <div className="absolute -right-6 -bottom-8 text-9xl opacity-30 sm:opacity-50 select-none pointer-events-none">
-                🤖
-              </div>
+              {(bannerConfig.showMascot ?? true) && (
+                <div className="absolute -right-6 -bottom-8 text-9xl opacity-30 sm:opacity-50 select-none pointer-events-none">
+                  🤖
+                </div>
+              )}
             </div>
 
             {/* Area 1: 3 Grade Selector Cards */}
