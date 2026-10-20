@@ -35,6 +35,29 @@ const COLLECTIONS = {
   SETTINGS: 'settings',
 };
 
+/**
+ * Recursively remove undefined fields so Firestore setDoc never throws
+ * "Unsupported field value: undefined" error.
+ */
+export function removeUndefinedFields<T>(obj: T): T {
+  if (obj === null || obj === undefined) {
+    return null as unknown as T;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => removeUndefinedFields(item)) as unknown as T;
+  }
+  if (typeof obj === 'object') {
+    const cleaned: any = {};
+    for (const [key, value] of Object.entries(obj as any)) {
+      if (value !== undefined) {
+        cleaned[key] = removeUndefinedFields(value);
+      }
+    }
+    return cleaned as T;
+  }
+  return obj;
+}
+
 export const FirestoreService = {
   // Check if database is empty and seed initial curriculum data
   async seedInitialDataIfNeeded(): Promise<void> {
@@ -112,7 +135,9 @@ export const FirestoreService = {
   async saveLesson(lesson: Lesson): Promise<void> {
     const path = `${COLLECTIONS.LESSONS}/${lesson.id}`;
     try {
-      await setDoc(doc(db, COLLECTIONS.LESSONS, lesson.id), lesson);
+      const sanitized = removeUndefinedFields(lesson);
+      await setDoc(doc(db, COLLECTIONS.LESSONS, lesson.id), sanitized);
+      console.log('[Firestore] Lesson saved and synced successfully:', lesson.id, lesson.title);
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, path);
     }
@@ -205,7 +230,8 @@ export const FirestoreService = {
   async saveTopic(topic: Topic): Promise<void> {
     const path = `${COLLECTIONS.TOPICS}/${topic.id}`;
     try {
-      await setDoc(doc(db, COLLECTIONS.TOPICS, topic.id), topic);
+      const sanitized = removeUndefinedFields(topic);
+      await setDoc(doc(db, COLLECTIONS.TOPICS, topic.id), sanitized);
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, path);
     }
@@ -215,7 +241,8 @@ export const FirestoreService = {
   async saveStudySession(session: StudySessionRecord): Promise<void> {
     const path = `${COLLECTIONS.STUDY_SESSIONS}/${session.id}`;
     try {
-      await setDoc(doc(db, COLLECTIONS.STUDY_SESSIONS, session.id), session);
+      const sanitized = removeUndefinedFields(session);
+      await setDoc(doc(db, COLLECTIONS.STUDY_SESSIONS, session.id), sanitized);
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, path);
     }
