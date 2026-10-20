@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { StudySessionRecord, StudentLearnerSummary, GradeLevel, Lesson } from '../../types';
 import { StorageService } from '../../data/storage';
+import { FirestoreService } from '../../services/firestoreService';
 import {
   Clock,
   Users,
@@ -55,6 +56,18 @@ export const LearnerMonitoringView: React.FC<Props> = ({ lessons, initialLessonI
   const [reminderTarget, setReminderTarget] = useState<StudentLearnerSummary | null>(null);
   const [reminderMessage, setReminderMessage] = useState('');
   const [reminderSuccess, setReminderSuccess] = useState(false);
+
+  // Real-time study sessions subscription
+  useEffect(() => {
+    const unsub = FirestoreService.subscribeStudySessions((firestoreSessions) => {
+      if (firestoreSessions && firestoreSessions.length > 0) {
+        setSessions(firestoreSessions);
+        StorageService.saveStudySessions(firestoreSessions);
+        setSummaries(StorageService.getLearnersSummary());
+      }
+    });
+    return () => unsub();
+  }, []);
 
   // All lessons for selector
   const allLessons = useMemo(() => {

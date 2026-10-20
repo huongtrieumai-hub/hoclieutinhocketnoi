@@ -83,21 +83,6 @@ export const LessonHeader: React.FC<Props> = ({
             </span>
           </div>
 
-          {/* 80% Video Watch Requirement Status Badge */}
-          <div
-            onClick={() => onSelectSection(2)}
-            title="Nhấn để xem Video & Tài liệu"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-black shadow-xs cursor-pointer transition border ${
-              hasMetWatchRequirement
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                : 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
-            }`}
-          >
-            <span>{hasMetWatchRequirement ? '✅' : '⏳'}</span>
-            <span className="hidden sm:inline">Video:</span>
-            <span>{Math.min(100, Math.round((materialsWatchSeconds / requiredWatchSeconds) * 100))}% / 80%</span>
-          </div>
-
           {/* Objectives Button */}
           <button
             onClick={() => setShowObjectivesModal(true)}

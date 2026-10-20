@@ -107,7 +107,6 @@ export const TeacherGuideModal: React.FC<Props> = ({ isOpen, onClose }) => {
               </div>
               <ul className="list-disc list-inside space-y-1 text-xs pt-1">
                 <li><strong>Tải lên hình ảnh:</strong> Thầy cô có thể tải ảnh trực tiếp từ máy tính hoặc dán link ảnh minh họa cho câu hỏi và cho từng phương án trả lời.</li>
-                <li><strong>Quy định xem 80% thời lượng:</strong> Học sinh bắt buộc phải xem ít nhất 80% thời lượng quy định của video và học liệu (thanh tiến độ thời gian thực) trước khi được đánh dấu hoàn thành bài học và nhận 3 sao vàng ⭐.</li>
               </ul>
             </div>
           </div>

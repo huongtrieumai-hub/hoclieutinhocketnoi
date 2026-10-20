@@ -22,7 +22,7 @@ export const StorageService = {
   getLessons(): Lesson[] {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.LESSONS);
-      if (data) {
+      if (data !== null) {
         const stored: Lesson[] = JSON.parse(data);
         return stored.map((l) => {
           const init = INITIAL_LESSONS.find((il) => il.id === l.id);
@@ -295,6 +295,15 @@ export const StorageService = {
     );
 
     // Automatically recalculate and sync learner summary
+    this.syncLearnersSummary();
+  },
+
+  saveStudySessions(sessions: StudySessionRecord[]): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.STUDY_SESSIONS, JSON.stringify(sessions.slice(0, 300)));
+    } catch (e) {
+      console.error('Error saving study sessions array:', e);
+    }
     this.syncLearnersSummary();
   },
 

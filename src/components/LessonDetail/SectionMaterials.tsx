@@ -104,95 +104,19 @@ export const SectionMaterials: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* Live Watch Status Capsule */}
-        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/30 text-xs font-black">
-          <Clock className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '6s' }} />
-          <span>Thời gian xem: {formatTime(materialsWatchSeconds)} / {formatTime(requiredWatchSeconds)}</span>
-        </div>
-      </div>
-
-      {/* 80% Duration Requirement Progress Bar Card */}
-      <div className={`p-5 rounded-3xl border-3 shadow-md transition-all ${
-        hasMetWatchRequirement
-          ? 'bg-gradient-to-r from-emerald-50 via-teal-50 to-green-50 border-emerald-400'
-          : 'bg-gradient-to-r from-amber-50 via-orange-50 to-blue-50 border-amber-300'
-      }`}>
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-          <div className="flex items-center gap-2.5">
-            {hasMetWatchRequirement ? (
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm">
-                <Lock className="w-5 h-5" />
-              </div>
-            )}
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-700">
-                  Điều Kiện Hoàn Thành Bài Học
-                </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                  hasMetWatchRequirement ? 'bg-emerald-200 text-emerald-900' : 'bg-amber-200 text-amber-900'
-                }`}>
-                  {hasMetWatchRequirement ? '✅ ĐÃ ĐỦ ĐIỀU KIỆN (≥ 80%)' : `⏳ BẮT BUỘC XEM 80% THỜI LƯỢNG`}
-                </span>
-              </div>
-              <p className="text-xs font-bold text-slate-600 mt-0.5">
-                {hasMetWatchRequirement
-                  ? 'Chúc mừng em! Em đã theo dõi đủ 80% thời lượng quy định và có thể hoàn thành bài học để nhận 3 sao vàng!'
-                  : `Em cần xem video và tài liệu ít nhất ${formatTime(required80Seconds)} (80% của ${formatTime(requiredWatchSeconds)}). Hãy tiếp tục theo dõi thêm ${Math.max(0, required80Seconds - materialsWatchSeconds)} giây nữa nhé!`}
-              </p>
-            </div>
-          </div>
-
-          {/* Action button: When >= 80%, show Complete Lesson button */}
-          {onAttemptCompleteLesson && (
-            <button
-              onClick={onAttemptCompleteLesson}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition transform hover:scale-105 cursor-pointer ${
-                isCompleted
-                  ? 'bg-emerald-600 text-white'
-                  : hasMetWatchRequirement
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white ring-2 ring-emerald-300'
-                  : 'bg-slate-200 text-slate-500 hover:bg-amber-100 hover:text-amber-800'
-              }`}
-            >
-              <Award className="w-4 h-4" />
-              <span>{isCompleted ? 'Đã hoàn thành bài ⭐' : hasMetWatchRequirement ? 'Hoàn thành bài học ⭐' : 'Xem tiến độ hoàn thành'}</span>
-            </button>
-          )}
-        </div>
-
-        {/* Progress Tracker Bar */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-[11px] font-black text-slate-600">
-            <span>Tiến độ đã xem: {currentPct}% ({formatTime(materialsWatchSeconds)})</span>
-            <span className="flex items-center gap-1 text-indigo-700">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Mốc hoàn thành 80%: {formatTime(required80Seconds)}</span>
-            </span>
-          </div>
-
-          <div className="relative w-full h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
-            {/* 80% Threshold Marker Line */}
-            <div
-              style={{ left: '80%' }}
-              className="absolute top-0 bottom-0 w-1 bg-amber-600 z-10 shadow"
-              title="Mốc tối thiểu 80%"
-            />
-
-            <div
-              style={{ width: `${Math.min(100, currentPct)}%` }}
-              className={`h-full rounded-full transition-all duration-300 ${
-                hasMetWatchRequirement
-                  ? 'bg-gradient-to-r from-emerald-400 via-teal-500 to-green-600'
-                  : 'bg-gradient-to-r from-blue-500 to-indigo-600'
-              }`}
-            />
-          </div>
-        </div>
+        {onAttemptCompleteLesson && (
+          <button
+            onClick={onAttemptCompleteLesson}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition transform hover:scale-105 cursor-pointer ${
+              isCompleted
+                ? 'bg-emerald-600 text-white'
+                : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white ring-2 ring-emerald-300'
+            }`}
+          >
+            <Award className="w-4 h-4" />
+            <span>{isCompleted ? 'Đã hoàn thành bài ⭐' : 'Hoàn thành bài học ⭐'}</span>
+          </button>
+        )}
       </div>
 
       {/* Materials List Tabs */}

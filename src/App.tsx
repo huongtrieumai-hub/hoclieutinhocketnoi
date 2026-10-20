@@ -161,7 +161,7 @@ export default function App() {
     // Live real-time subscription for lessons from Firestore
     const unsubLessons = FirestoreService.subscribeLessons(
       (firestoreLessons) => {
-        if (firestoreLessons && firestoreLessons.length > 0) {
+        if (Array.isArray(firestoreLessons)) {
           setLessons(firestoreLessons);
           StorageService.saveLessons(firestoreLessons);
         }
@@ -172,7 +172,7 @@ export default function App() {
     // Live real-time subscription for topics from Firestore
     const unsubTopics = FirestoreService.subscribeTopics(
       (firestoreTopics) => {
-        if (firestoreTopics && firestoreTopics.length > 0) {
+        if (Array.isArray(firestoreTopics) && firestoreTopics.length > 0) {
           setTopics(firestoreTopics);
           StorageService.saveTopics(firestoreTopics);
         }
@@ -307,12 +307,6 @@ export default function App() {
     if (!activeLesson) return;
     const isComp = progress.completedLessons.includes(activeLesson.id);
     if (!isComp) {
-      // 80% Video & Document View Duration Logic Gate
-      if (!hasMetWatchRequirement) {
-        setShowDurationWarningModal(true);
-        return;
-      }
-
       StorageService.markLessonCompleted(activeLesson.id, 3);
       if (currentUser) {
         currentUser.stars = (currentUser.stars || 0) + 3;
@@ -824,62 +818,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 80% Video & Document Duration Warning Modal */}
-      {showDurationWarningModal && activeLesson && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border-4 border-amber-300 text-center space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
-              ⏱️
-            </div>
-            <div>
-              <span className="px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-xs font-black uppercase tracking-wider">
-                Yêu cầu xem tối thiểu 80% thời lượng
-              </span>
-              <h3 className="text-xl font-black text-slate-800 mt-2">
-                Chưa Đủ Điều Kiện Hoàn Thành Bài!
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-semibold">
-                Theo quy định học tập, em bắt buộc phải theo dõi video và tài liệu ít nhất <strong>80% thời lượng quy định</strong> ({required80Percent} giây / {requiredWatchDuration} giây).
-              </p>
-            </div>
 
-            {/* Visual Progress Bar in Modal */}
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-left">
-              <div className="flex justify-between text-xs font-black text-slate-700">
-                <span>Đã xem: {materialsWatchSeconds}s ({Math.min(100, Math.round((materialsWatchSeconds / requiredWatchDuration) * 100))}%)</span>
-                <span className="text-amber-700">Mốc 80%: {required80Percent}s</span>
-              </div>
-              <div className="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden">
-                <div
-                  style={{ width: `${Math.min(100, Math.round((materialsWatchSeconds / requiredWatchDuration) * 100))}%` }}
-                  className="h-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full transition-all duration-300"
-                />
-              </div>
-              <p className="text-[11px] text-slate-500 font-bold text-center pt-1">
-                Em cần học thêm: <strong className="text-rose-600 font-black">{Math.max(0, required80Percent - materialsWatchSeconds)} giây</strong> nữa để được ghi nhận hoàn thành bài học và nhận 3 sao vàng! ⭐
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2 pt-2">
-              <button
-                onClick={() => {
-                  setShowDurationWarningModal(false);
-                  setActiveSection(2);
-                }}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-black text-xs shadow-md transition cursor-pointer"
-              >
-                👉 Mở Phần 2: Video &amp; Tài Liệu Ngay
-              </button>
-              <button
-                onClick={() => setShowDurationWarningModal(false)}
-                className="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-bold text-xs transition cursor-pointer"
-              >
-                Đã hiểu
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Modern Login Modal with Demo Accounts */}
       <LoginModal

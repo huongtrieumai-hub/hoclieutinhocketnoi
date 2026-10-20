@@ -635,28 +635,7 @@ export const LessonEditorModal: React.FC<Props> = ({
                 </button>
               </div>
 
-              {/* Thiết lập thời lượng quy định & điều kiện 80% */}
-              <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xs">
-                <div className="max-w-md">
-                  <span className="text-xs font-black text-blue-900 flex items-center gap-1.5">
-                    ⏱️ Thời lượng xem Video &amp; Tài liệu quy định:
-                  </span>
-                  <p className="text-[11px] text-blue-700 font-medium mt-1 leading-relaxed">
-                    Điều kiện bắt buộc: Học sinh phải theo dõi ít nhất <strong>80% thời lượng quy định</strong> ({Math.round((requiredWatchSeconds || 180) * 0.8)} giây / {Math.floor((requiredWatchSeconds || 180) / 60)} phút {(requiredWatchSeconds || 180) % 60}s) mới được hệ thống xác nhận hoàn thành bài học.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-blue-300 shadow-xs">
-                  <input
-                    type="number"
-                    min={30}
-                    step={10}
-                    value={requiredWatchSeconds}
-                    onChange={(e) => setRequiredWatchSeconds(Math.max(30, Number(e.target.value) || 180))}
-                    className="w-20 px-2 py-1 text-center font-black text-sm text-blue-900 focus:outline-none"
-                  />
-                  <span className="text-xs font-bold text-slate-600">giây</span>
-                </div>
-              </div>
+
 
               {materials.map((mat, idx) => (
                 <div key={mat.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
