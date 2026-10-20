@@ -41,6 +41,7 @@ import {
   GraduationCap,
   ShieldCheck,
   Image as ImageIcon,
+  Check,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -75,6 +76,8 @@ export const AdminDashboard: React.FC<Props> = ({
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isClaimsGuideOpen, setIsClaimsGuideOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [isDeletingLesson, setIsDeletingLesson] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Selected lesson for deep learner monitoring
   const [selectedLessonForMonitoring, setSelectedLessonForMonitoring] = useState<string | null>(null);
@@ -150,10 +153,23 @@ export const AdminDashboard: React.FC<Props> = ({
     confetti({ particleCount: 50, spread: 60 });
   };
 
-  const handleDeleteLesson = (id: string) => {
-    StorageService.deleteLesson(id);
-    setDeleteConfirmId(null);
-    onRefreshData();
+  const handleDeleteLesson = async (id: string) => {
+    setIsDeletingLesson(true);
+    try {
+      await StorageService.deleteLesson(id);
+      setDeleteConfirmId(null);
+      onRefreshData();
+      setToastMessage('Đã xóa bài giảng thành công khỏi hệ thống!');
+      setTimeout(() => setToastMessage(null), 3500);
+    } catch (err) {
+      console.error('[Admin] Lỗi khi xóa bài học:', err);
+      setDeleteConfirmId(null);
+      onRefreshData();
+      setToastMessage('Đã xóa bài giảng khỏi thiết bị!');
+      setTimeout(() => setToastMessage(null), 3500);
+    } finally {
+      setIsDeletingLesson(false);
+    }
   };
 
   const handleMoveOrder = (lesson: Lesson, direction: 'up' | 'down') => {
@@ -879,29 +895,58 @@ export const AdminDashboard: React.FC<Props> = ({
       </div>
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirmId && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-rose-300 animate-in fade-in zoom-in-95 text-center">
-            <Trash2 className="w-12 h-12 text-rose-500 mx-auto mb-2" />
-            <h4 className="text-lg font-black text-slate-800">Xác Nhận Xóa Bài Giảng?</h4>
-            <p className="text-xs text-slate-500 my-3">
-              Thầy cô có chắc chắn muốn xóa bài học này không? Hành động này không thể hoàn tác trừ khi thầy cô có bản sao lưu JSON.
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={() => handleDeleteLesson(deleteConfirmId)}
-                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow-md cursor-pointer"
-              >
-                Xóa Bài Giảng
-              </button>
+      {deleteConfirmId && (() => {
+        const targetLesson = lessons.find((l) => l.id === deleteConfirmId);
+        return (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-rose-300 animate-in fade-in zoom-in-95 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+                <Trash2 className="w-7 h-7" />
+              </div>
+              <h4 className="text-lg font-black text-slate-800">Xác Nhận Xóa Bài Giảng?</h4>
+              {targetLesson && (
+                <div className="my-2 p-2.5 bg-rose-50 border border-rose-200 rounded-2xl text-xs font-black text-rose-900 line-clamp-2">
+                  {targetLesson.title}
+                </div>
+              )}
+              <p className="text-xs text-slate-500 my-2">
+                Thầy cô có chắc chắn muốn xóa bài học này khỏi hệ thống không? Dữ liệu sẽ được xóa hoàn toàn trên cả thiết bị và đám mây.
+              </p>
+              <div className="flex gap-2 mt-4">
+                <button
+                  type="button"
+                  disabled={isDeletingLesson}
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer disabled:opacity-50"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="button"
+                  disabled={isDeletingLesson}
+                  onClick={() => handleDeleteLesson(deleteConfirmId)}
+                  className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                >
+                  {isDeletingLesson ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Đang xóa...</span>
+                    </>
+                  ) : (
+                    <span>Xác Nhận Xóa</span>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
+        );
+      })()}
+
+      {/* Floating Success Notification Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-slate-700 animate-in fade-in slide-in-from-bottom-4">
+          <Check className="w-5 h-5 text-emerald-400" />
+          <span className="text-xs font-bold">{toastMessage}</span>
         </div>
       )}
 

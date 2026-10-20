@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { KnowledgeCard } from '../../types';
-import { BookOpen, Volume2, Sparkles, FileText, Video, ExternalLink, Laptop, Square } from 'lucide-react';
-import { VietnameseSpeechService } from '../../services/vietnameseSpeechService';
+import { BookOpen, Sparkles, FileText, Video, ExternalLink, Laptop } from 'lucide-react';
 
 interface Props {
   cards: KnowledgeCard[];
@@ -9,33 +8,6 @@ interface Props {
 }
 
 export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
-  const [activeSpeechId, setActiveSpeechId] = useState<string | null>(null);
-
-  // Stop speech synthesis on component unmount
-  useEffect(() => {
-    return () => {
-      VietnameseSpeechService.stop();
-    };
-  }, []);
-
-  const toggleSpeakCard = (id: string, text: string) => {
-    if (activeSpeechId === id) {
-      VietnameseSpeechService.stop();
-      setActiveSpeechId(null);
-      return;
-    }
-
-    VietnameseSpeechService.stop();
-    setActiveSpeechId(id);
-
-    VietnameseSpeechService.speak(
-      text,
-      () => setActiveSpeechId(id),
-      () => setActiveSpeechId(null),
-      () => setActiveSpeechId(null)
-    );
-  };
-
   return (
     <div className="space-y-6">
       {/* Header - Synced with Laptop Icon & Vibrant Blue-Cyan Palette */}
@@ -83,41 +55,12 @@ export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
             className="bg-white rounded-3xl border-3 border-blue-100 hover:border-blue-300 shadow-md hover:shadow-xl transition-all overflow-hidden"
           >
             <div className="p-6 md:p-8">
-              {/* Card Title & Speech Button */}
-              <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-3">
-                  <span className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center shadow-xs">
-                    {idx + 1}
-                  </span>
-                  <h4 className="text-xl font-black text-slate-800">{card.title}</h4>
-                </div>
-
-                <button
-                  onClick={() =>
-                    toggleSpeakCard(
-                      card.id,
-                      `Phần ${idx + 1}: ${card.title}. ${card.details || card.summary}. Ghi nhớ nhanh: ${card.keyMemory || ''}`
-                    )
-                  }
-                  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black transition cursor-pointer shadow-sm ${
-                    activeSpeechId === card.id
-                      ? 'bg-rose-500 hover:bg-rose-600 text-white animate-pulse ring-2 ring-rose-300'
-                      : 'bg-sky-50 text-blue-700 hover:bg-sky-100 border border-sky-200'
-                  }`}
-                  title="Đọc nội dung bài học bằng tiếng Việt Nam chuẩn ngữ điệu"
-                >
-                  {activeSpeechId === card.id ? (
-                    <>
-                      <Square className="w-3.5 h-3.5 fill-current" />
-                      <span>Dừng đọc ⏹️</span>
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 className="w-4 h-4 text-blue-600 animate-bounce" />
-                      <span>Đọc bài bằng tiếng Việt 📢</span>
-                    </>
-                  )}
-                </button>
+              {/* Card Title */}
+              <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                <span className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center shadow-xs">
+                  {idx + 1}
+                </span>
+                <h4 className="text-xl font-black text-slate-800">{card.title}</h4>
               </div>
 
               {/* Knowledge Details & Image grid */}

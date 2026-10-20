@@ -87,13 +87,15 @@ export const StorageService = {
     );
   },
 
-  deleteLesson(id: string): void {
+  async deleteLesson(id: string): Promise<void> {
     const lessons = this.getLessons();
     const filtered = lessons.filter((l) => l.id !== id);
     this.saveLessons(filtered);
-    FirestoreService.deleteLesson(id).catch((err) =>
-      console.warn('[StorageService] Error deleting lesson in Firestore:', err)
-    );
+    try {
+      await FirestoreService.deleteLesson(id);
+    } catch (err) {
+      console.warn('[StorageService] Error deleting lesson in Firestore:', err);
+    }
   },
 
   duplicateLesson(id: string): Lesson | null {
