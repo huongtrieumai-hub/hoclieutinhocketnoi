@@ -111,24 +111,10 @@ export const TeacherGuideModal: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Mục 6: Kiểm soát người học & Theo dõi thời gian học */}
-          <div className="p-4 bg-teal-50 rounded-2xl border border-teal-200">
-            <h4 className="font-black text-teal-900 text-base flex items-center gap-2 mb-2">
-              <span className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">6</span>
-              Kiểm soát người học &amp; Theo dõi thời gian học (Thời gian thực)
-            </h4>
-            <ol className="list-decimal list-inside space-y-1.5 font-semibold text-xs leading-relaxed text-teal-950">
-              <li>Chuyển sang tab <strong>"Kiểm Soát Người Học &amp; Thời Gian Học ⏱️"</strong> trên thanh điều hướng quản trị.</li>
-              <li>Hệ thống <strong>tự động bấm giờ chính xác</strong> từng giây khi học sinh mở bài học và tự ghi nhận các mục bài học các em đã click vào (Khởi động, Khám phá, Sơ đồ tư duy, Mô phỏng, Trò chơi, Robot AI).</li>
-              <li><strong>Bảng tổng hợp:</strong> Thầy cô dễ dàng nắm bắt tổng thời gian học của từng em, bài đã học, bài hoàn thành, điểm trắc nghiệm và sao vàng ⭐.</li>
-              <li><strong>Hệ thống cảnh báo:</strong> Tự động gắn nhãn <em>"⚠️ Học ít"</em> với học sinh học dưới 15 phút để giáo viên kịp thời gửi tin nhắn động viên, nhắc nhở.</li>
-              <li><strong>Xuất báo cáo:</strong> Bấm nút <em>"Xuất Báo Cáo Thời Gian (CSV)"</em> để tải file bảng tính Excel/CSV nộp báo cáo chuyên môn hoặc gửi phụ huynh.</li>
-            </ol>
-          </div>
-
-          {/* Mục 7: Sao chép (Duplicate) & Lưu trữ dữ liệu */}
+          {/* Mục 6: Sao chép (Duplicate) & Lưu trữ dữ liệu */}
           <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200">
             <h4 className="font-black text-amber-900 text-base flex items-center gap-2 mb-2">
+              <span className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs">6</span>
               <Copy className="w-5 h-5 text-amber-600" />
               <span>Chức năng Sao chép bài học &amp; Quản lý lưu trữ</span>
             </h4>

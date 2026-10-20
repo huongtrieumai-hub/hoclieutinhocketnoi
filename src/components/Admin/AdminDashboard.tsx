@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Lesson, Topic, StudentScoreRecord, GradeLevel, StudySessionRecord, UserAccount } from '../../types';
+import { Lesson, Topic, StudentScoreRecord, GradeLevel, UserAccount } from '../../types';
 import { StorageService } from '../../data/storage';
 import { LessonEditorModal } from './LessonEditorModal';
 import { StudentScoresView } from './StudentScoresView';
 import { TeacherGuideModal } from './TeacherGuideModal';
-import { LearnerMonitoringView } from './LearnerMonitoringView';
 import { StudentAccountsManager } from './StudentAccountsManager';
 import { FirebaseAdminClaimsGuideModal } from './FirebaseAdminClaimsGuideModal';
 import { CloudinaryMediaUploader } from '../CloudinaryMediaUploader';
@@ -66,7 +65,7 @@ export const AdminDashboard: React.FC<Props> = ({
   onExitAdmin,
   onPreviewLesson,
 }) => {
-  const [activeTab, setActiveTab] = useState<'lessons' | 'topics' | 'learners' | 'scores' | 'accounts' | 'backup' | 'cloudinary' | 'banner'>('lessons');
+  const [activeTab, setActiveTab] = useState<'lessons' | 'topics' | 'scores' | 'accounts' | 'backup' | 'cloudinary' | 'banner'>('lessons');
   const [filterGrade, setFilterGrade] = useState<GradeLevel | 'all'>('all');
   const [filterTopic, setFilterTopic] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -79,30 +78,8 @@ export const AdminDashboard: React.FC<Props> = ({
   const [isDeletingLesson, setIsDeletingLesson] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Selected lesson for deep learner monitoring
-  const [selectedLessonForMonitoring, setSelectedLessonForMonitoring] = useState<string | null>(null);
-
-  // Study sessions & Scores
-  const [sessions, setSessions] = useState<StudySessionRecord[]>(() => StorageService.getStudySessions());
+  // Student scores
   const [scores, setScores] = useState<StudentScoreRecord[]>(() => StorageService.getScores());
-
-  // Aggregate stats per lesson
-  const lessonStatsMap = useMemo(() => {
-    const map = new Map<string, { totalSeconds: number; studentsCount: number; completedCount: number }>();
-    sessions.forEach((s) => {
-      const current = map.get(s.lessonId) || { totalSeconds: 0, studentsCount: 0, completedCount: 0 };
-      current.totalSeconds += s.durationSeconds;
-      current.studentsCount += 1;
-      if (s.isCompleted) current.completedCount += 1;
-      map.set(s.lessonId, current);
-    });
-    return map;
-  }, [sessions]);
-
-  // Overall study time for quick banner
-  const overallStudySeconds = useMemo(() => {
-    return sessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-  }, [sessions]);
 
   // Filter topics based on grade
   const currentTopics = useMemo(() => {
@@ -327,20 +304,6 @@ export const AdminDashboard: React.FC<Props> = ({
               <span>Quản Lý 6 Chủ Đề SGK ({topics.length}) 📁</span>
             </button>
 
-            <button
-              onClick={() => {
-                setSelectedLessonForMonitoring(null);
-                setActiveTab('learners');
-              }}
-              className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer ${
-                activeTab === 'learners'
-                  ? 'bg-amber-400 text-slate-900 shadow-md scale-102'
-                  : 'text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Clock className="w-4 h-4 text-emerald-400" />
-              <span>Kiểm Soát Người Học &amp; Thời Gian Học ⏱️</span>
-            </button>
 
             <button
               onClick={() => {
@@ -414,7 +377,7 @@ export const AdminDashboard: React.FC<Props> = ({
         {activeTab === 'lessons' && (
           <div className="space-y-6">
             {/* Quick Stats overview */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
               <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs">
                 <span className="text-[10px] font-black text-slate-400 uppercase">TỔNG SỐ BÀI GIẢNG</span>
                 <div className="text-xl sm:text-2xl font-black text-blue-700 mt-1">{lessons.length} bài</div>
@@ -431,25 +394,6 @@ export const AdminDashboard: React.FC<Props> = ({
                 <span className="text-[10px] font-black text-slate-400 uppercase">LƯỢT THỰC HÀNH</span>
                 <div className="text-xl sm:text-2xl font-black text-purple-600 mt-1">{scores.length} lượt</div>
               </div>
-              <button
-                onClick={() => {
-                  setSelectedLessonForMonitoring(null);
-                  setActiveTab('learners');
-                }}
-                className="p-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100 rounded-2xl border-2 border-emerald-300 shadow-xs text-left group hover:scale-102 transition cursor-pointer"
-                title="Nhấn để mở trang Kiểm soát Người học & Thời gian học"
-              >
-                <div className="flex items-center justify-between text-emerald-800">
-                  <span className="text-[10px] font-black uppercase">THỜI GIAN HỌC SINH ⏱️</span>
-                  <Clock className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-125 transition" />
-                </div>
-                <div className="text-lg sm:text-xl font-black text-emerald-900 mt-1 truncate">
-                  {StorageService.formatStudyDuration(overallStudySeconds)}
-                </div>
-                <div className="text-[10px] text-emerald-700 font-extrabold mt-0.5">
-                  Kiểm soát người học →
-                </div>
-              </button>
             </div>
 
             {/* Filter & Action Bar */}
@@ -532,15 +476,14 @@ export const AdminDashboard: React.FC<Props> = ({
                       <th className="py-3 px-4">Tên bài học</th>
                       <th className="py-3 px-4">Chủ đề SGK</th>
                       <th className="py-3 px-4">Học liệu tích hợp</th>
-                      <th className="py-3 px-4 w-44">Thời gian học &amp; Người học ⏱️</th>
                       <th className="py-3 px-4 w-24">Trạng thái</th>
-                      <th className="py-3 px-4 text-center w-40">Thao tác</th>
+                      <th className="py-3 px-4 text-center w-36">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-bold text-slate-700">
                     {filteredLessons.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="py-12 text-center text-slate-400 font-bold">
+                        <td colSpan={7} className="py-12 text-center text-slate-400 font-bold">
                           Không tìm thấy bài giảng nào phù hợp với bộ lọc.
                         </td>
                       </tr>
@@ -629,38 +572,6 @@ export const AdminDashboard: React.FC<Props> = ({
                               </div>
                             </td>
 
-                            {/* Learner Control & Study Time Column */}
-                            <td className="py-3 px-4">
-                              {(() => {
-                                const lStats = lessonStatsMap.get(lesson.id);
-                                const hasData = lStats && lStats.totalSeconds > 0;
-
-                                return (
-                                  <button
-                                    onClick={() => {
-                                      setSelectedLessonForMonitoring(lesson.id);
-                                      setActiveTab('learners');
-                                    }}
-                                    className="group text-left p-1.5 -m-1.5 rounded-xl hover:bg-emerald-50 transition cursor-pointer w-full"
-                                    title="Nhấn để xem chi tiết học sinh và thời gian học bài này"
-                                  >
-                                    <div className="flex items-center gap-1.5 text-emerald-800 font-black text-xs group-hover:text-emerald-950">
-                                      <Clock className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition shrink-0" />
-                                      <span>
-                                        {hasData ? StorageService.formatStudyDuration(lStats.totalSeconds) : '0 phút'}
-                                      </span>
-                                    </div>
-                                    <div className="text-[10px] text-slate-500 font-bold mt-0.5 flex items-center gap-1">
-                                      <Users className="w-3 h-3 text-slate-400" />
-                                      <span>
-                                        {lStats ? lStats.studentsCount : 0} lượt • {lStats ? lStats.completedCount : 0} xong
-                                      </span>
-                                    </div>
-                                  </button>
-                                );
-                              })()}
-                            </td>
-
                             <td className="py-3 px-4">
                               {isDraft ? (
                                 <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md text-[10px] font-black">
@@ -675,16 +586,6 @@ export const AdminDashboard: React.FC<Props> = ({
 
                             <td className="py-3 px-4">
                               <div className="flex items-center justify-center gap-1">
-                                <button
-                                  onClick={() => {
-                                    setSelectedLessonForMonitoring(lesson.id);
-                                    setActiveTab('learners');
-                                  }}
-                                  className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition cursor-pointer"
-                                  title="Kiểm soát người học & thời gian học bài này"
-                                >
-                                  <Clock className="w-3.5 h-3.5" />
-                                </button>
                                 <button
                                   onClick={() => onPreviewLesson(lesson)}
                                   className="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition cursor-pointer"
@@ -752,17 +653,6 @@ export const AdminDashboard: React.FC<Props> = ({
           />
         )}
 
-        {/* TAB 2: LEARNER MONITORING & STUDY TIME */}
-        {activeTab === 'learners' && (
-          <LearnerMonitoringView
-            lessons={lessons}
-            initialLessonId={selectedLessonForMonitoring || undefined}
-            onRefreshData={() => {
-              setSessions(StorageService.getStudySessions());
-              onRefreshData();
-            }}
-          />
-        )}
 
         {/* TAB 3: SCORES VIEW */}
         {activeTab === 'scores' && <StudentScoresView scores={scores} />}
