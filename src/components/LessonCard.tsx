@@ -18,7 +18,7 @@ export const LessonCard: React.FC<Props> = ({
   onStartLearning,
 }) => {
   return (
-    <div className="bg-white rounded-3xl border-2 border-slate-200 hover:border-[#D79922] shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between group">
+    <div className="bg-white rounded-3xl border-2 border-slate-200 hover:border-sky-400 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between group">
       <div>
         {/* Card Cover Image with Status Badge */}
         <div className="relative h-48 w-full overflow-hidden bg-slate-100">
@@ -34,7 +34,7 @@ export const LessonCard: React.FC<Props> = ({
 
           {/* Top badges */}
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-            <span className="px-3 py-1 bg-[#D79922] text-white font-black text-xs rounded-xl shadow-md border border-[#EFE2BA]/40">
+            <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-xs rounded-xl shadow-md border border-white/30">
               LỚP {lesson.grade}
             </span>
 
@@ -52,7 +52,7 @@ export const LessonCard: React.FC<Props> = ({
 
           {/* SGK indicator */}
           {lesson.isDemo && (
-            <div className="absolute bottom-3 left-3 px-2.5 py-0.5 bg-[#4056A1]/85 text-[#EFE2BA] border border-[#D79922]/50 backdrop-blur-xs rounded-lg text-[10px] font-bold">
+            <div className="absolute bottom-3 left-3 px-2.5 py-0.5 bg-blue-900/85 text-sky-200 border border-sky-400/50 backdrop-blur-xs rounded-lg text-[10px] font-bold">
               SGK Kết nối tri thức
             </div>
           )}
@@ -61,12 +61,12 @@ export const LessonCard: React.FC<Props> = ({
         {/* Content */}
         <div className="p-6">
           {topicName && (
-            <div className="text-[11px] font-black text-[#F13C20] uppercase tracking-wider mb-1 line-clamp-1">
+            <div className="text-[11px] font-black text-sky-600 uppercase tracking-wider mb-1 line-clamp-1">
               {topicName}
             </div>
           )}
 
-          <h3 className="text-lg font-black text-[#4056A1] line-clamp-2 group-hover:text-[#D79922] transition-colors">
+          <h3 className="text-lg font-black text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
             {lesson.title}
           </h3>
 
@@ -76,7 +76,7 @@ export const LessonCard: React.FC<Props> = ({
 
           {/* Features Highlights */}
           <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100 text-[11px] font-bold text-slate-700">
-            <span className="flex items-center gap-1 bg-[#C5CBE3]/30 text-[#4056A1] px-2.5 py-1 rounded-lg border border-[#C5CBE3]">
+            <span className="flex items-center gap-1 bg-sky-50 text-blue-700 px-2.5 py-1 rounded-lg border border-sky-200">
               🌳 Sơ đồ tư duy
             </span>
             <span className="flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-100">
@@ -85,7 +85,7 @@ export const LessonCard: React.FC<Props> = ({
             <span className="flex items-center gap-1 bg-amber-50 text-amber-900 px-2.5 py-1 rounded-lg border border-amber-100">
               🎯 {lesson.section5Games.questions.length} câu đố
             </span>
-            <span className="flex items-center gap-1 bg-rose-50 text-[#F13C20] px-2.5 py-1 rounded-lg border border-rose-100">
+            <span className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg border border-indigo-100">
               🤖 Robot AI
             </span>
           </div>
@@ -96,7 +96,7 @@ export const LessonCard: React.FC<Props> = ({
       <div className="p-6 pt-0">
         <button
           onClick={() => onStartLearning(lesson)}
-          className="w-full py-3.5 bg-gradient-to-r from-[#4056A1] via-[#F13C20] to-[#D79922] hover:from-[#2e3e75] hover:to-[#be8418] text-white rounded-2xl font-black text-sm shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer group-hover:scale-102 border border-[#EFE2BA]/40"
+          className="w-full py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white rounded-2xl font-black text-sm shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer group-hover:scale-102 border border-white/30"
         >
           <Play className="w-4 h-4 fill-white" />
           <span>Bắt đầu học 🚀</span>

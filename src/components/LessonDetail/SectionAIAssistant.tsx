@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck } from 'lucide-react';
+import { VietnameseSpeechService } from '../../services/vietnameseSpeechService';
 
 interface Props {
   lessonTitle: string;
@@ -71,24 +72,22 @@ export const SectionAIAssistant: React.FC<Props> = ({
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Voice playback
+  // Voice playback with Vietnamese Speech Service
   const speakText = (id: string, text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      if (speakingMessageId === id) {
-        setSpeakingMessageId(null);
-        return;
-      }
-      // Remove markdown characters for cleaner speech
-      const cleanText = text.replace(/[*#_`]/g, '');
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'vi-VN';
-      utterance.rate = 0.95;
-      utterance.onstart = () => setSpeakingMessageId(id);
-      utterance.onend = () => setSpeakingMessageId(null);
-      utterance.onerror = () => setSpeakingMessageId(null);
-      window.speechSynthesis.speak(utterance);
+    if (speakingMessageId === id) {
+      VietnameseSpeechService.stop();
+      setSpeakingMessageId(null);
+      return;
     }
+    VietnameseSpeechService.stop();
+    setSpeakingMessageId(id);
+
+    VietnameseSpeechService.speak(
+      text,
+      () => setSpeakingMessageId(id),
+      () => setSpeakingMessageId(null),
+      () => setSpeakingMessageId(null)
+    );
   };
 
   // Send message to server /api/robot-tinhoc

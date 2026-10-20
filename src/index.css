@@ -58,90 +58,90 @@
   animation: pulse-subtle 3s ease-in-out infinite;
 }
 
-/* Custom 5-Color Palette:
-   1. #D79922 - Warm Golden Ochre
-   2. #EFE2BA - Soft Cream / Sand
-   3. #F13C20 - Vivid Coral Red
-   4. #4056A1 - Classic Royal / Slate Blue
-   5. #C5CBE3 - Soft Periwinkle / Light Lavender-Blue
+/* Modern Educational Blue & Cyan Palette (Referenced from user screenshot):
+   1. #1D4ED8 / #2563EB - Royal & Vibrant Blue
+   2. #0EA5E9 / #06B6D4 - Sky Blue & Vibrant Cyan
+   3. #EFF6FF / #E0F2FE - Soft Ice Blue / Clear Sky Tint
+   4. #4F46E5 - Bright Indigo Accent
+   5. #0284C7 - Deep Sky Blue
 */
 :root {
-  --color-gold: #D79922;
-  --color-cream: #EFE2BA;
-  --color-red: #F13C20;
-  --color-blue: #4056A1;
-  --color-periwinkle: #C5CBE3;
+  --color-gold: #0284C7;
+  --color-cream: #EFF6FF;
+  --color-red: #2563EB;
+  --color-blue: #1D4ED8;
+  --color-periwinkle: #E0F2FE;
 }
 
 .bg-brand-navy,
 .bg-brand-blue {
-  background-color: #4056A1;
+  background-color: #1D4ED8;
 }
 
 .bg-brand-red {
-  background-color: #F13C20;
+  background-color: #2563EB;
 }
 
 .bg-brand-orange,
 .bg-brand-gold {
-  background-color: #D79922;
+  background-color: #0EA5E9;
 }
 
 .bg-brand-cream {
-  background-color: #EFE2BA;
+  background-color: #EFF6FF;
 }
 
 .bg-brand-periwinkle {
-  background-color: #C5CBE3;
+  background-color: #E0F2FE;
 }
 
 .text-brand-navy,
 .text-brand-blue {
-  color: #4056A1;
+  color: #1D4ED8;
 }
 
 .text-brand-red {
-  color: #F13C20;
+  color: #2563EB;
 }
 
 .text-brand-orange,
 .text-brand-gold {
-  color: #D79922;
+  color: #0284C7;
 }
 
 .text-brand-cream {
-  color: #EFE2BA;
+  color: #EFF6FF;
 }
 
 .border-brand-orange,
 .border-brand-gold {
-  border-color: #D79922;
+  border-color: #0EA5E9;
 }
 
 .border-brand-red {
-  border-color: #F13C20;
+  border-color: #2563EB;
 }
 
 .border-brand-blue,
 .border-brand-navy {
-  border-color: #4056A1;
+  border-color: #1D4ED8;
 }
 
 .border-brand-cream {
-  border-color: #EFE2BA;
+  border-color: #E0F2FE;
 }
 
 .border-brand-periwinkle {
-  border-color: #C5CBE3;
+  border-color: #BAE6FD;
 }
 
 .glow-orange,
 .glow-gold {
-  box-shadow: 0 8px 25px -4px rgba(215, 153, 34, 0.35);
+  box-shadow: 0 8px 25px -4px rgba(14, 165, 233, 0.35);
 }
 
 .glow-red {
-  box-shadow: 0 8px 25px -4px rgba(241, 60, 32, 0.35);
+  box-shadow: 0 8px 25px -4px rgba(37, 99, 235, 0.35);
 }
 
 .glow-navy,

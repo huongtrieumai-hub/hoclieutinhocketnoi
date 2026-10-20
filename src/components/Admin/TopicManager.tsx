@@ -401,7 +401,7 @@ export const TopicManager: React.FC<Props> = ({
                     className="w-16 px-3 py-2 text-center text-lg bg-slate-50 border border-slate-300 rounded-xl"
                   />
                   <div className="flex gap-1.5 flex-wrap">
-                    {['💻', '🌐', '📁', '🛡️', '🎨', '🧩', '🖥️', '🗂️', '📝', '🤖', '📊', '🐱'].map((emoji) => (
+                    {['💻', '🖥️', '⌨️', '🖱️', '🌐', '📁', '🛡️', '🎨', '🧩', '🗂️', '📝', '🤖', '📊'].map((emoji) => (
                       <button
                         key={emoji}
                         type="button"

@@ -1069,7 +1069,7 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                   7. Chọn Biểu Tượng Đại Diện:
                 </label>
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {['👦', '👧', '🚀', '🤖', '👩‍🏫', '👨‍💻', '🐱', '🦁', '🌟', '🎨'].map((emoji) => (
+                  {['💻', '👦', '👧', '🚀', '🤖', '👩‍🏫', '👨‍💻', '🖥️', '🦁', '🌟', '🎨'].map((emoji) => (
                     <button
                       key={emoji}
                       type="button"

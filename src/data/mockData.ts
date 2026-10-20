@@ -1234,14 +1234,14 @@ export const INITIAL_LESSONS: Lesson[] = [
         'Khối lệnh màu xanh dương điều khiển chuyển động, màu vàng bắt đầu sự kiện.',
       ],
       starterPrompts: [
-        'Robot ơi, làm sao để chú mèo Scratch đi lùi lại?',
-        'Làm cách nào để chú mèo đổi màu lông liên tục?',
+        'Robot ơi, làm sao để điều khiển máy tính laptop di chuyển lùi lại?',
+        'Làm cách nào để máy tính laptop đổi màu sắc liên tục?',
         'Robot hãy đố em một thuật toán đơn giản trong Scratch nhé!',
       ],
       sampleDialogues: [
         {
-          user: 'Làm sao để chú mèo Scratch đi lùi hả Robot?',
-          robot: '🤖 Ồ một bí mật cực hay! Để chú mèo đi lùi, em chỉ cần đổi số trong khối lệnh [di chuyển 10 bước] thành số âm: [di chuyển -10 bước]! Khi đó chú mèo sẽ bước giật lùi như đang nhảy điệu nhảy Moonwalk nổi tiếng đấy! Em thử ngay xem nhé! 🐱✨',
+          user: 'Làm sao để nhân vật máy tính laptop đi lùi hả Robot?',
+          robot: '🤖 Ồ một bí mật cực hay! Để máy tính laptop đi lùi, em chỉ cần đổi số trong khối lệnh [di chuyển 10 bước] thành số âm: [di chuyển -10 bước]! Khi đó máy tính sẽ bước giật lùi như đang nhảy điệu nhảy Moonwalk nổi tiếng đấy! Em thử ngay xem nhé! 💻✨',
         },
       ],
     },

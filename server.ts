@@ -178,6 +178,38 @@ Hãy trả lời học sinh bằng tiếng Việt thật truyền cảm hứng v
   }
 });
 
+// Endpoint: Stream Vietnamese Text-To-Speech audio (MP3)
+app.get('/api/tts', async (req, res) => {
+  try {
+    const text = ((req.query.text as string) || '').trim();
+    if (!text) {
+      return res.status(400).send('Missing text parameter');
+    }
+    // Limit to 200 chars per audio chunk for Google TTS compatibility
+    const cleanText = text.replace(/[*#_`]/g, '').slice(0, 200);
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
+
+    const upstreamRes = await fetch(ttsUrl, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      },
+    });
+
+    if (!upstreamRes.ok) {
+      return res.status(upstreamRes.status).send('TTS upstream service unavailable');
+    }
+
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    const buffer = Buffer.from(await upstreamRes.arrayBuffer());
+    res.send(buffer);
+  } catch (err) {
+    console.warn('[TTS API] Error streaming Vietnamese TTS:', err);
+    res.status(500).send('TTS stream error');
+  }
+});
+
 // Start server with Vite middleware in development or static in production
 async function startServer() {
   const isProd = process.env.NODE_ENV === 'production';

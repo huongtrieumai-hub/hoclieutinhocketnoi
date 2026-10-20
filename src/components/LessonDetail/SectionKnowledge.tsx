@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KnowledgeCard } from '../../types';
-import { BookOpen, Volume2, Sparkles, FileText, Video, ExternalLink } from 'lucide-react';
+import { BookOpen, Volume2, Sparkles, FileText, Video, ExternalLink, Laptop, Square } from 'lucide-react';
+import { VietnameseSpeechService } from '../../services/vietnameseSpeechService';
 
 interface Props {
   cards: KnowledgeCard[];
@@ -10,33 +11,41 @@ interface Props {
 export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
   const [activeSpeechId, setActiveSpeechId] = useState<string | null>(null);
 
-  const speakCard = (id: string, text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      if (activeSpeechId === id) {
-        setActiveSpeechId(null);
-        return;
-      }
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'vi-VN';
-      utterance.rate = 0.9;
-      utterance.onstart = () => setActiveSpeechId(id);
-      utterance.onend = () => setActiveSpeechId(null);
-      utterance.onerror = () => setActiveSpeechId(null);
-      window.speechSynthesis.speak(utterance);
+  // Stop speech synthesis on component unmount
+  useEffect(() => {
+    return () => {
+      VietnameseSpeechService.stop();
+    };
+  }, []);
+
+  const toggleSpeakCard = (id: string, text: string) => {
+    if (activeSpeechId === id) {
+      VietnameseSpeechService.stop();
+      setActiveSpeechId(null);
+      return;
     }
+
+    VietnameseSpeechService.stop();
+    setActiveSpeechId(id);
+
+    VietnameseSpeechService.speak(
+      text,
+      () => setActiveSpeechId(id),
+      () => setActiveSpeechId(null),
+      () => setActiveSpeechId(null)
+    );
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-3xl text-white shadow-xl flex items-center justify-between">
+      {/* Header - Synced with Laptop Icon & Vibrant Blue-Cyan Palette */}
+      <div className="p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-3xl text-white shadow-xl flex items-center justify-between border border-cyan-400/30">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner backdrop-blur-xs">
-            🎯
+          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner backdrop-blur-md border border-white/30 text-white">
+            <Laptop className="w-9 h-9 text-white filter drop-shadow-md" />
           </div>
           <div>
-            <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider">
+            <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider border border-white/30">
               MỤC TIÊU &amp; KIẾN THỨC TRỌNG TÂM
             </span>
             <h3 className="text-2xl font-black mt-1">Kiến Thức Trọng Tâm Bài Học</h3>
@@ -84,15 +93,30 @@ export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
                 </div>
 
                 <button
-                  onClick={() => speakCard(card.id, `${card.title}. ${card.details || card.summary}. Ghi nhớ: ${card.keyMemory}`)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs ${
+                  onClick={() =>
+                    toggleSpeakCard(
+                      card.id,
+                      `Phần ${idx + 1}: ${card.title}. ${card.details || card.summary}. Ghi nhớ nhanh: ${card.keyMemory || ''}`
+                    )
+                  }
+                  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black transition cursor-pointer shadow-sm ${
                     activeSpeechId === card.id
-                      ? 'bg-rose-500 text-white animate-pulse'
-                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                      ? 'bg-rose-500 hover:bg-rose-600 text-white animate-pulse ring-2 ring-rose-300'
+                      : 'bg-sky-50 text-blue-700 hover:bg-sky-100 border border-sky-200'
                   }`}
+                  title="Đọc nội dung bài học bằng tiếng Việt Nam chuẩn ngữ điệu"
                 >
-                  <Volume2 className="w-4 h-4" />
-                  <span>{activeSpeechId === card.id ? 'Đang đọc...' : 'Đọc bài này 📢'}</span>
+                  {activeSpeechId === card.id ? (
+                    <>
+                      <Square className="w-3.5 h-3.5 fill-current" />
+                      <span>Dừng đọc ⏹️</span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="w-4 h-4 text-blue-600 animate-bounce" />
+                      <span>Đọc bài bằng tiếng Việt 📢</span>
+                    </>
+                  )}
                 </button>
               </div>
 

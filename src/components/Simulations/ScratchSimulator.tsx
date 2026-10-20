@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Square, RotateCcw, Plus, Trash2, Sparkles } from 'lucide-react';
+import { Play, Square, RotateCcw, Plus, Trash2, Sparkles, Laptop } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface ScratchCommand {
@@ -14,8 +14,8 @@ const AVAILABLE_BLOCKS: Array<{ type: ScratchCommand['type']; text: string; colo
   { type: 'move', text: '🚶 Di chuyển 30 bước', color: 'bg-blue-600 text-white', value: 30 },
   { type: 'turn', text: '🔄 Quay phải 45 độ', color: 'bg-blue-500 text-white', value: 45 },
   { type: 'say', text: '💬 Nói "Xin chào bạn nhỏ!"', color: 'bg-purple-600 text-white', value: 'Xin chào bạn nhỏ!' },
-  { type: 'costume', text: '🎨 Đổi trang phục rực rỡ', color: 'bg-pink-600 text-white', value: 'sparkle' },
-  { type: 'sound', text: '🔊 Phát tiếng Meo Meo! 🐱', color: 'bg-rose-500 text-white', value: 'meow' },
+  { type: 'costume', text: '🎨 Đổi trang phục rực rỡ', color: 'bg-cyan-600 text-white', value: 'sparkle' },
+  { type: 'sound', text: '🔊 Khởi động Máy Tính! 💻', color: 'bg-emerald-600 text-white', value: 'beep' },
 ];
 
 export const ScratchSimulator: React.FC = () => {
@@ -85,7 +85,7 @@ export const ScratchSimulator: React.FC = () => {
         setIsSparkling(true);
         setTimeout(() => setIsSparkling(false), 800);
       } else if (cmd.type === 'sound') {
-        setSpeechBubble('Meo meo meo! 🐱🎶');
+        setSpeechBubble('Bíp bíp! Máy tính đã sẵn sàng! 💻✨');
       }
 
       await new Promise((r) => setTimeout(r, 600));
@@ -97,13 +97,16 @@ export const ScratchSimulator: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-xl border-4 border-rose-200">
+    <div className="bg-white rounded-3xl p-6 shadow-xl border-4 border-sky-200">
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
         <div>
-          <span className="inline-block px-3 py-1 bg-rose-100 text-rose-800 text-xs font-bold rounded-full mb-1">
+          <span className="inline-block px-3 py-1 bg-sky-100 text-sky-800 text-xs font-black rounded-full mb-1">
             SÂN CHƠI SCRATCH MINI - LẬP TRÌNH KHỐI LỚP 5
           </span>
-          <h3 className="text-xl font-black text-slate-800">Điều Khiển Chú Mèo Scratch Di Chuyển</h3>
+          <h3 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <Laptop className="w-6 h-6 text-blue-600" />
+            Điều Khiển Máy Tính Laptop Thông Minh
+          </h3>
         </div>
 
         <div className="flex items-center gap-2">
@@ -217,7 +220,7 @@ export const ScratchSimulator: React.FC = () => {
             </div>
           )}
 
-          {/* Cat Sprite Avatar */}
+          {/* Laptop Sprite Avatar (Replaced Cat with Laptop Computer) */}
           <div
             style={{
               transform: `translate(${catPos.x}px, ${catPos.y}px) rotate(${catPos.rotation}deg)`,
@@ -226,18 +229,18 @@ export const ScratchSimulator: React.FC = () => {
             className="relative my-auto flex flex-col items-center justify-center cursor-pointer select-none"
           >
             {isSparkling && (
-              <Sparkles className="w-8 h-8 text-amber-400 absolute -top-4 -right-4 animate-spin" />
+              <Sparkles className="w-8 h-8 text-cyan-400 absolute -top-4 -right-4 animate-spin" />
             )}
             <div className={`text-6xl filter drop-shadow-md transition-all ${isSparkling ? 'scale-125' : ''}`}>
-              🐱
+              💻
             </div>
-            <span className="text-[10px] font-black bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full mt-1 shadow-sm">
-              Mèo Scratch
+            <span className="text-[10px] font-black bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-2.5 py-0.5 rounded-full mt-1 shadow-sm flex items-center gap-1">
+              <Laptop className="w-3 h-3" /> Máy tính Laptop
             </span>
           </div>
 
           <div className="w-full text-center text-[11px] text-sky-700 font-bold">
-            {isRunning ? '⏳ Đang thực hiện kịch bản...' : 'Nhấn Cờ Xanh ở trên để xem Mèo biểu diễn!'}
+            {isRunning ? '⏳ Đang thực hiện kịch bản...' : 'Nhấn Cờ Xanh ở trên để xem Máy tính Laptop chạy lệnh!'}
           </div>
         </div>
       </div>

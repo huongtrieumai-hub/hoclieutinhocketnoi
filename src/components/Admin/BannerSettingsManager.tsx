@@ -29,9 +29,14 @@ interface Props {
 // Curated educational banner templates for quick preview/selection
 const SAMPLE_BANNERS = [
   {
-    name: '🌟 Banner Học Liệu Tin Học (Ảnh bạn tải lên)',
+    name: '🌟 Banner Học Liệu Tin Học (Chuẩn SGK)',
     url: '/banner.svg',
-    description: 'Bầu trời xanh, Robot AI thông minh, học sinh vui học & máy tính',
+    description: 'Bầu trời xanh, học sinh vui học máy tính & robot thông minh',
+  },
+  {
+    name: '🎨 Giao Diện Bảng Màu Tham Chiếu Mới (Ảnh Tải Lên)',
+    url: '/assets/aistudio/image_3e2b31b4.png',
+    description: 'Bảng màu gradient xanh dương - cyan hiện đại theo mẫu tham chiếu',
   },
   {
     name: 'Phòng Tin Học Vui Nhộn',
@@ -176,8 +181,8 @@ export const BannerSettingsManager: React.FC<Props> = ({
     if (overlayColor === 'none') return 'transparent';
     if (overlayColor === 'dark') return 'rgba(15, 23, 42, 0.75)';
     if (overlayColor === 'light') return 'rgba(255, 255, 255, 0.75)';
-    // Default gradient overlay: Kết Nối Tri Thức themed
-    return 'linear-gradient(to right, rgba(64, 86, 161, 0.92) 0%, rgba(241, 60, 32, 0.78) 55%, rgba(215, 153, 34, 0.65) 100%)';
+    // Default gradient overlay: modern vibrant blue-cyan palette
+    return 'linear-gradient(to right, rgba(29, 78, 216, 0.92) 0%, rgba(37, 99, 235, 0.78) 55%, rgba(6, 182, 212, 0.65) 100%)';
   };
 
   return (
@@ -297,8 +302,8 @@ export const BannerSettingsManager: React.FC<Props> = ({
               backgroundSize: bgSize,
               backgroundRepeat: 'no-repeat',
             }}
-            className={`relative overflow-hidden rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-b-4 border-[#D79922] min-h-[220px] flex items-center ${
-              !imageUrl ? 'bg-gradient-to-r from-[#4056A1] via-[#F13C20] to-[#D79922]' : 'bg-slate-900'
+            className={`relative overflow-hidden rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-b-4 border-sky-400 min-h-[220px] flex items-center ${
+              !imageUrl ? 'bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#06B6D4]' : 'bg-slate-900'
             }`}
           >
             {/* Color Overlay Layer for perfect text contrast and character visibility */}
@@ -314,8 +319,8 @@ export const BannerSettingsManager: React.FC<Props> = ({
 
             {/* Left Content Area (Text & Buttons) */}
             <div className="relative z-10 max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#EFE2BA] text-[#4056A1] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
-                <Sparkles className="w-3.5 h-3.5 text-[#D79922] animate-spin" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white/20 border border-white/30 text-white rounded-full text-xs font-black uppercase tracking-wider shadow-md backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-spin" />
                 <span>{tagline || 'Bộ Sách Kết Nối Tri Thức Với Cuộc Sống'}</span>
               </div>
 
@@ -324,7 +329,7 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
                     {headline || 'Học Liệu Tin Học 3–4–5!'}
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#EFE2BA] font-bold leading-relaxed mt-1">
+                  <p className="text-xs sm:text-sm text-sky-100 font-bold leading-relaxed mt-1">
                     {subtext ||
                       'Khám phá bài giảng số tương tác, sơ đồ tư duy, mô phỏng gõ phím & chuột, trò chơi ôn tập và tương tác cùng Robot Tin Học!'}
                   </p>
@@ -334,7 +339,7 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <h1 className="text-2xl sm:text-4xl font-black drop-shadow-sm leading-tight text-white">
                     Chào bạn Học Sinh 👦
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#EFE2BA] font-bold leading-relaxed mt-1">
+                  <p className="text-xs sm:text-sm text-sky-100 font-bold leading-relaxed mt-1">
                     Chúc em một ngày học tập môn Tin học thật hứng khởi, tích lũy thêm nhiều sao vàng và thực hành sáng tạo!
                   </p>
                 </div>
@@ -346,22 +351,22 @@ export const BannerSettingsManager: React.FC<Props> = ({
                   <>
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-[#EFE2BA] text-[#4056A1] rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#D79922]"
+                      className="px-5 py-2.5 bg-white hover:bg-sky-50 text-blue-700 rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-sky-300"
                     >
-                      <LogIn className="w-3.5 h-3.5 text-[#F13C20]" />
+                      <LogIn className="w-3.5 h-3.5 text-blue-600" />
                       <span>Đăng Nhập Tài Khoản</span>
                     </button>
 
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-[#F13C20] text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-[#EFE2BA]"
+                      className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 cursor-pointer border-2 border-white/40"
                     >
                       <UserCheck className="w-3.5 h-3.5" />
                       <span>Đăng Ký Tài Khoản Mới</span>
                     </button>
                   </>
                 ) : (
-                  <div className="flex items-center gap-2 text-white/95 text-xs font-bold bg-[#4056A1]/70 border border-[#D79922] px-4 py-2 rounded-2xl backdrop-blur-xs">
+                  <div className="flex items-center gap-2 text-white/95 text-xs font-bold bg-blue-900/60 border border-sky-400/50 px-4 py-2 rounded-2xl backdrop-blur-xs">
                     <span>✨ Em hãy chọn bài học ở danh sách bên dưới để bắt đầu học nhé!</span>
                   </div>
                 )}

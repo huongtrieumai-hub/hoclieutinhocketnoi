@@ -568,7 +568,7 @@ export const LoginModal: React.FC<Props> = ({
                   5. Chọn hình đại diện yêu thích:
                 </label>
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {['👦', '👧', '🚀', '🤖', '🐱', '🦁', '🌟', '🎨'].map((emoji) => (
+                  {['💻', '👦', '👧', '🚀', '🤖', '🖥️', '🦁', '🌟', '🎨'].map((emoji) => (
                     <button
                       key={emoji}
                       type="button"
