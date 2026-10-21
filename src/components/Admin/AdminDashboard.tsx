@@ -549,14 +549,14 @@ export const AdminDashboard: React.FC<Props> = ({
                                     <Video className="w-3 h-3" /> {lesson.materials.length} học liệu
                                   </span>
                                 )}
-                                {lesson.interactiveSimulations && lesson.interactiveSimulations.length > 0 && (
-                                  <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md flex items-center gap-0.5">
-                                    <Gamepad2 className="w-3 h-3" /> {lesson.interactiveSimulations.length} mô phỏng
-                                  </span>
-                                )}
                                 {lesson.mindMapImages && lesson.mindMapImages.length > 0 && (
                                   <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-md">
                                     🌳 {lesson.mindMapImages.length} ảnh sơ đồ
+                                  </span>
+                                )}
+                                {lesson.interactiveSimulations && lesson.interactiveSimulations.length > 0 && (
+                                  <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md flex items-center gap-0.5">
+                                    <Gamepad2 className="w-3 h-3" /> {lesson.interactiveSimulations.length} mô phỏng
                                   </span>
                                 )}
                                 {lesson.externalGames && lesson.externalGames.length > 0 && (

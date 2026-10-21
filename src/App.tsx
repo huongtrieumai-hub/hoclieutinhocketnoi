@@ -268,10 +268,9 @@ export default function App() {
     const secNames: Record<number, string> = {
       1: '1. Mục tiêu & Trọng tâm',
       2: '2. Video & Tài liệu',
-      3: '3. Mô phỏng tương tác',
-      4: '4. Sơ đồ tư duy',
-      5: '5. Trò chơi kiểm tra',
-      6: '6. Robot Tin Học AI',
+      3: '3. Sơ đồ tư duy & Mô phỏng',
+      4: '4. Trò chơi kiểm tra',
+      5: '5. Robot Tin Học AI',
     };
     const name = secNames[secNum];
     if (name && !visitedSections.includes(name)) {

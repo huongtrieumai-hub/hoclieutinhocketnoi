@@ -19,7 +19,7 @@ interface Props {
 const SECTIONS = [
   { id: 1, name: '1. Mục tiêu & Trọng tâm', icon: '🎯', color: 'from-blue-600 to-indigo-600' },
   { id: 2, name: '2. Video & Tài liệu', icon: '🎬', color: 'from-indigo-600 to-purple-600' },
-  { id: 3, name: '3. Mô phỏng & Sơ đồ tư duy', icon: '🎮', color: 'from-emerald-500 to-teal-600' },
+  { id: 3, name: '3. Sơ đồ tư duy & Mô phỏng', icon: '🌳', color: 'from-purple-500 via-teal-500 to-emerald-600' },
   { id: 4, name: '4. Trò chơi kiểm tra', icon: '🎯', color: 'from-rose-500 to-pink-500' },
   { id: 5, name: '5. Robot Tin Học AI', icon: '🤖', color: 'from-teal-500 to-emerald-600' },
 ];

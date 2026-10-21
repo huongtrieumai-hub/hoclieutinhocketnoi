@@ -28,11 +28,11 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
   const externalUrl = data?.externalMindMapUrl?.trim();
   const externalTitle = data?.externalMindMapTitle?.trim() || 'Sơ Đồ Tư Duy Tương Tác Web Ngoài';
 
-  // Mode: 'external' (interactive web mind map) | 'images' (SGK diagram images)
+  // Mode: 'images' (SGK diagram images) | 'external' (interactive web mind map)
   const [viewMode, setViewMode] = useState<'external' | 'images'>(() => {
-    if (externalUrl) return 'external';
     if (mindMapImages.length > 0) return 'images';
-    return 'external';
+    if (externalUrl) return 'external';
+    return 'images';
   });
 
   // Mindmap Image Viewer State
@@ -58,7 +58,7 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
           </div>
           <div>
             <span className="px-3 py-0.5 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider text-amber-200">
-              PHẦN 4: SƠ ĐỒ TƯ DUY KIẾN THỨC
+              SƠ ĐỒ TƯ DUY KIẾN THỨC
             </span>
             <h3 className="text-2xl font-black mt-0.5">Sơ Đồ Tư Duy Bài Học</h3>
           </div>
@@ -70,7 +70,7 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
           </div>
           <h4 className="text-base font-black text-slate-800">Chưa có sơ đồ tư duy cho bài học này</h4>
           <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-            Giáo viên có thể gắn link sơ đồ tư duy tương tác trực tuyến từ Coggle, MindMeister, Miro, GitMind hoặc tải ảnh sơ đồ SGK trong phần <strong>"Quản trị bài giảng Tin học"</strong>.
+            Giáo viên có thể tải ảnh sơ đồ SGK từ máy tính hoặc gắn link sơ đồ tư duy tương tác trực tuyến từ Coggle, MindMeister, Miro, GitMind trong phần <strong>"Quản trị bài giảng Tin học"</strong>.
           </p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
           </div>
           <div>
             <span className="px-3 py-0.5 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider text-amber-200">
-              PHẦN 4: SƠ ĐỒ TƯ DUY KIẾN THỨC
+              SƠ ĐỒ TƯ DUY KIẾN THỨC SGK
             </span>
             <h3 className="text-2xl font-black mt-0.5">Sơ Đồ Tư Duy Bài Học</h3>
           </div>
@@ -111,6 +111,18 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
       {hasExternal && hasImages && (
         <div className="flex flex-wrap items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-black">
           <button
+            onClick={() => setViewMode('images')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition cursor-pointer ${
+              viewMode === 'images'
+                ? 'bg-purple-600 text-white shadow-md'
+                : 'text-slate-700 hover:bg-white'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4 text-purple-400" />
+            <span>🖼️ Hình Ảnh Sơ Đồ Chuẩn SGK ({mindMapImages.length})</span>
+          </button>
+
+          <button
             onClick={() => setViewMode('external')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition cursor-pointer ${
               viewMode === 'external'
@@ -121,18 +133,6 @@ export const SectionMindMap: React.FC<Props> = ({ data, mindMapImages = [] }) =>
             <Globe className="w-4 h-4 text-blue-400" />
             <span>🌐 Sơ Đồ Tư Duy Tương Tác Web Ngoài (Coggle/Miro/...)</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          </button>
-
-          <button
-            onClick={() => setViewMode('images')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition cursor-pointer ${
-              viewMode === 'images'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'text-slate-700 hover:bg-white'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4 text-purple-400" />
-            <span>🖼️ Hình Ảnh Sơ Đồ Chuẩn SGK ({mindMapImages.length})</span>
           </button>
         </div>
       )}
