@@ -28,7 +28,7 @@ export interface KnowledgeCard {
   summary: string;
   details: string;
   imageUrl?: string;
-  keyMemory: string; // Ghi nhớ cốt lõi
+  keyMemory?: string; // Ghi nhớ cốt lõi (tùy chọn)
   videoUrl?: string;
   pdfUrl?: string;
 }

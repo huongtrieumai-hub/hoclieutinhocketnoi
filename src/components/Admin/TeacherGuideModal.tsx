@@ -67,17 +67,17 @@ export const TeacherGuideModal: React.FC<Props> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Mục 3: Mô phỏng bài học tương tác (Gemini Canvas) */}
-          {/* Mục 3: Mô phỏng tương tác & Sơ đồ tư duy */}
-          <div className="p-4 bg-gradient-to-r from-emerald-50 to-purple-50 rounded-2xl border border-emerald-200">
+          {/* Mục 3: Sơ đồ tư duy & Mô phỏng tương tác */}
+          <div className="p-4 bg-gradient-to-r from-purple-50 to-emerald-50 rounded-2xl border border-purple-200">
             <h4 className="font-black text-slate-900 text-base flex items-center gap-2 mb-2">
-              <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">3</span>
-              <span>Mô phỏng tương tác &amp; Sơ đồ tư duy bài học (Thẻ C)</span>
+              <span className="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs">3</span>
+              <span>Sơ đồ tư duy &amp; Mô phỏng tương tác bài học (Thẻ C)</span>
             </h4>
             <ol className="list-decimal list-inside space-y-1.5 font-semibold text-xs leading-relaxed text-slate-800">
-              <li>Chuyển sang thẻ <strong>"C. Mô phỏng &amp; Sơ đồ tư duy"</strong> trong hộp thoại soạn bài.</li>
+              <li>Chuyển sang thẻ <strong>"C. Sơ đồ tư duy &amp; Mô phỏng"</strong> trong hộp thoại soạn bài.</li>
+              <li><strong>Phần Sơ đồ tư duy (được đưa lên đầu):</strong> Tải ảnh sơ đồ SGK từ máy tính (hỗ trợ phóng to, thu nhỏ và toàn màn hình) hoặc gắn link sơ đồ tương tác trực tuyến (Coggle, MindMeister, Miro, Canva...).</li>
               <li><strong>Phần Mô phỏng:</strong> Dán đường dẫn bài mô phỏng đã tạo bằng Gemini Canvas, Scratch MIT, PhET Interactive hoặc các Web App giáo dục để học sinh thực hành trực tiếp.</li>
-              <li><strong>Phần Sơ đồ tư duy:</strong> Gắn link sơ đồ tư duy tương tác (Coggle, MindMeister, Miro, Canva...) hoặc tải ảnh sơ đồ SGK từ máy tính (hỗ trợ phóng to, thu nhỏ và toàn màn hình).</li>
-              <li>Giao diện học sinh tích hợp chung vào 1 thẻ với <strong>thanh chuyển đổi mượt mà</strong> giữa Mô phỏng tương tác và Sơ đồ tư duy.</li>
+              <li>Giao diện học sinh tích hợp chung vào 1 thẻ với <strong>thanh chuyển đổi mượt mà</strong> giữa Sơ đồ tư duy và Mô phỏng tương tác.</li>
             </ol>
           </div>
 

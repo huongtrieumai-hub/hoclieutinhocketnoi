@@ -120,7 +120,6 @@ export const LessonEditorModal: React.FC<Props> = ({
         title: '1. Kiến thức trọng tâm phần 1',
         summary: 'Tóm tắt ngắn gọn khái niệm để học sinh nắm bắt nhanh.',
         details: 'Giải thích chi tiết với các ví dụ thực tế gần gũi.',
-        keyMemory: 'Ghi nhớ cốt lõi của phần này!',
       },
     ]
   );
@@ -401,7 +400,7 @@ export const LessonEditorModal: React.FC<Props> = ({
           {[
             { id: 'info', label: 'A. Thông tin bài học', icon: '📋' },
             { id: 'materials', label: 'B. Tài liệu & Học liệu', icon: '📚' },
-            { id: 'sim_mindmap', label: 'C. Mô phỏng & Sơ đồ tư duy', icon: '🎮' },
+            { id: 'sim_mindmap', label: 'C. Sơ đồ tư duy & Mô phỏng', icon: '🌳' },
             { id: 'games', label: 'D. Trò chơi đánh giá', icon: '🎯' },
             { id: 'warmup_ai', label: 'E. Câu đố & Robot AI', icon: '🤖' },
           ].map((t) => (
@@ -533,7 +532,6 @@ export const LessonEditorModal: React.FC<Props> = ({
                           title: `Kiến thức phần ${cards.length + 1}`,
                           summary: '',
                           details: '',
-                          keyMemory: '',
                         },
                       ])
                     }
@@ -581,20 +579,6 @@ export const LessonEditorModal: React.FC<Props> = ({
                         }}
                         className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-200"
                         placeholder="Nội dung kiến thức trọng tâm cho học sinh..."
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-bold mb-1 text-amber-800">Ghi nhớ cốt lõi (Key Takeaway):</label>
-                      <input
-                        type="text"
-                        value={c.keyMemory}
-                        onChange={(e) => {
-                          const updated = [...cards];
-                          updated[idx].keyMemory = e.target.value;
-                          setCards(updated);
-                        }}
-                        placeholder="Ví dụ: Thân máy = Bộ não chỉ huy!"
-                        className="w-full px-3 py-1.5 bg-amber-50 rounded-xl border border-amber-300 font-bold text-amber-900"
                       />
                     </div>
                   </div>
@@ -729,16 +713,16 @@ export const LessonEditorModal: React.FC<Props> = ({
             </div>
           )}
 
-          {/* TAB C: MÔ PHỎNG TƯƠNG TÁC & SƠ ĐỒ TƯ DUY */}
+          {/* TAB C: SƠ ĐỒ TƯ DUY & MÔ PHỎNG TƯƠNG TÁC */}
           {activeTab === 'sim_mindmap' && (
             <div className="space-y-6">
               {/* Sub-tab Switcher for Tab C */}
-              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-gradient-to-r from-emerald-50 via-teal-50 to-purple-50 rounded-2xl border border-emerald-200">
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-gradient-to-r from-purple-50 via-teal-50 to-emerald-50 rounded-2xl border border-purple-200">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-slate-800 flex items-center gap-1.5">
-                    <span>🎮</span>
                     <span>🌳</span>
-                    <span>C. Mô Phỏng Tương Tác &amp; Sơ Đồ Tư Duy</span>
+                    <span>🎮</span>
+                    <span>C. Sơ Đồ Tư Duy &amp; Mô Phỏng Tương Tác</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
@@ -755,17 +739,6 @@ export const LessonEditorModal: React.FC<Props> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setSimMindmapEditorSubTab('sim')}
-                    className={`px-3 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${
-                      simMindmapEditorSubTab === 'sim'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'text-emerald-700 hover:bg-emerald-50'
-                    }`}
-                  >
-                    <span>🎮 Mô phỏng ({interactiveSimulations.length})</span>
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setSimMindmapEditorSubTab('mindmap')}
                     className={`px-3 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${
                       simMindmapEditorSubTab === 'mindmap'
@@ -775,384 +748,395 @@ export const LessonEditorModal: React.FC<Props> = ({
                   >
                     <span>🌳 Sơ đồ tư duy ({mindMapImages.length})</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setSimMindmapEditorSubTab('sim')}
+                    className={`px-3 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${
+                      simMindmapEditorSubTab === 'sim'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-emerald-700 hover:bg-emerald-50'
+                    }`}
+                  >
+                    <span>🎮 Mô phỏng ({interactiveSimulations.length})</span>
+                  </button>
                 </div>
               </div>
 
-              {/* MỤC 1: MÔ PHỎNG BÀI HỌC TƯƠNG TÁC */}
+              {/* MỤC 1: SƠ ĐỒ TƯ DUY KIẾN THỨC SGK */}
+              {(simMindmapEditorSubTab === 'all' || simMindmapEditorSubTab === 'mindmap') && (
+                <div className="space-y-6 pt-1">
+                  <div className="flex items-center gap-2 pb-1 border-b border-purple-200">
+                    <span className="text-sm font-black text-purple-900 flex items-center gap-1.5">
+                      <ImageIcon className="w-4 h-4 text-purple-600" />
+                      <span>1. Sơ Đồ Tư Duy Kiến Thức SGK</span>
+                    </span>
+                  </div>
+
+                  {/* Mục 1.1: Tải ảnh sơ đồ tư duy */}
+                  <div className="p-4 bg-purple-50/50 border border-purple-200 rounded-2xl space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h4 className="text-sm font-black text-purple-900 flex items-center gap-1.5">
+                          <ImageIcon className="w-4 h-4 text-purple-600" />
+                          <span>Hình Ảnh Sơ Đồ Tư Duy ({mindMapImages.length} ảnh)</span>
+                        </h4>
+                        <p className="text-slate-500 text-[11px]">
+                          Hỗ trợ tải lên từ máy tính (PNG, JPG, JPEG, WEBP) hoặc dán link ảnh trực tuyến. Học sinh có thể phóng to, thu nhỏ và xem toàn màn hình.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const url = prompt('Nhập đường dẫn URL ảnh sơ đồ tư duy (PNG, JPG, WEBP):');
+                            if (url && url.trim()) {
+                              setMindMapImages([
+                                ...mindMapImages,
+                                {
+                                  id: 'mm_img_' + Date.now(),
+                                  title: 'Sơ đồ tư duy trực quan',
+                                  imageUrl: url.trim(),
+                                  caption: 'Sơ đồ kiến thức trọng tâm',
+                                },
+                              ]);
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer text-xs transition"
+                        >
+                          <LinkIcon className="w-3.5 h-3.5" />
+                          <span>Thêm bằng URL ảnh</span>
+                        </button>
+
+                        <label className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs text-xs">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Tải ảnh từ máy tính</span>
+                          <input
+                            type="file"
+                            accept=".png,.jpg,.jpeg,.webp"
+                            onChange={handleUploadMindMapImage}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* List of uploaded Mind Map Images */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                      {mindMapImages.map((img, idx) => (
+                        <div key={img.id} className="p-3 bg-white border border-purple-200 rounded-xl space-y-2.5 shadow-xs">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-black text-purple-800">Sơ đồ ảnh #{idx + 1}</span>
+                            <div className="flex items-center gap-2">
+                              <label className="text-[11px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-lg cursor-pointer flex items-center gap-1 border border-purple-200 transition">
+                                <Upload className="w-3 h-3" />
+                                <span>Thay ảnh</span>
+                                <input
+                                  type="file"
+                                  accept=".png,.jpg,.jpeg,.webp"
+                                  onChange={(e) => handleReplaceMindMapImage(idx, e)}
+                                  className="hidden"
+                                />
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => setMindMapImages(mindMapImages.filter((_, i) => i !== idx))}
+                                className="text-rose-500 hover:text-rose-700 p-1 rounded-lg hover:bg-rose-50 cursor-pointer"
+                                title="Xóa sơ đồ này"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="h-36 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center relative group">
+                            <img
+                              src={img.imageUrl}
+                              alt={img.title}
+                              className="w-full h-full object-contain bg-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Tiêu đề sơ đồ:</label>
+                            <input
+                              type="text"
+                              value={img.title}
+                              onChange={(e) => {
+                                const updated = [...mindMapImages];
+                                updated[idx].title = e.target.value;
+                                setMindMapImages(updated);
+                              }}
+                              className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-semibold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Chú thích:</label>
+                            <input
+                              type="text"
+                              value={img.caption || ''}
+                              onChange={(e) => {
+                                const updated = [...mindMapImages];
+                                updated[idx].caption = e.target.value;
+                                setMindMapImages(updated);
+                              }}
+                              placeholder="Mô tả nội dung sơ đồ tư duy..."
+                              className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-xs"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Mục 1.2: Gắn Link Sơ Đồ Tư Duy Tương Tác Từ Web Khác */}
+                  <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h4 className="text-sm font-black text-blue-900 flex items-center gap-1.5">
+                          <Globe className="w-4 h-4 text-blue-600" />
+                          <span>Gắn Link Sơ Đồ Tư Duy Tương Tác Từ Web Khác</span>
+                        </h4>
+                        <p className="text-slate-500 text-[11px] mt-0.5">
+                          Gắn đường link sơ đồ tư duy tương tác trực tuyến từ Coggle.it, MindMeister, Miro, GitMind, Canva, Whimsical... Học sinh có thể tương tác trực tiếp hoặc mở toàn màn hình.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Đường dẫn URL sơ đồ tư duy tương tác:
+                        </label>
+                        <input
+                          type="url"
+                          value={externalMindMapUrl}
+                          onChange={(e) => setExternalMindMapUrl(e.target.value)}
+                          placeholder="https://coggle.it/diagram/... hoặc https://www.mindmeister.com/..."
+                          className="w-full px-3 py-1.5 bg-white rounded-xl border border-blue-200 text-xs font-semibold"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Tên hiển thị sơ đồ (Tùy chọn):
+                        </label>
+                        <input
+                          type="text"
+                          value={externalMindMapTitle}
+                          onChange={(e) => setExternalMindMapTitle(e.target.value)}
+                          placeholder="Ví dụ: Sơ đồ tương tác Coggle: Các bộ phận máy tính"
+                          className="w-full px-3 py-1.5 bg-white rounded-xl border border-blue-200 text-xs font-semibold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-blue-100">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-blue-900">
+                        <input
+                          type="checkbox"
+                          checked={allowMindMapEmbed}
+                          onChange={(e) => setAllowMindMapEmbed(e.target.checked)}
+                          className="w-4 h-4 text-blue-600 rounded"
+                        />
+                        <span>Cho phép nhúng xem và tương tác trực tiếp trên trang bài giảng (qua iframe)</span>
+                      </label>
+
+                      <div className="flex items-center gap-1.5 text-[10px]">
+                        <span className="text-slate-400 font-bold">Mẫu link tham khảo:</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setExternalMindMapUrl('https://coggle.it/diagram/Zg1m2_demo/t/may-tinh-va-em');
+                            setExternalMindMapTitle('Sơ đồ tư duy Coggle: Kiến thức Tin học');
+                          }}
+                          className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
+                        >
+                          Coggle.it
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setExternalMindMapUrl('https://www.mindmeister.com/maps/public_map_shell/demo');
+                            setExternalMindMapTitle('Sơ đồ MindMeister: Hệ thống kiến thức');
+                          }}
+                          className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
+                        >
+                          MindMeister
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setExternalMindMapUrl('https://miro.com/app/live-embed/demo');
+                            setExternalMindMapTitle('Bảng sơ đồ tương tác Miro');
+                          }}
+                          className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
+                        >
+                          Miro
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MỤC 2: MÔ PHỎNG BÀI HỌC TƯƠNG TÁC */}
               {(simMindmapEditorSubTab === 'all' || simMindmapEditorSubTab === 'sim') && (
                 <div className="p-4 bg-emerald-50/40 border border-emerald-200 rounded-2xl space-y-4">
                   <div className="flex justify-between items-center">
                     <div>
                       <h4 className="text-sm font-black text-slate-800">
-                        1. Mô Phỏng Bài Học Tương Tác ({interactiveSimulations.length})
+                        2. Mô Phỏng Bài Học Tương Tác ({interactiveSimulations.length})
                       </h4>
-                  <p className="text-slate-500 text-[11px]">
-                    Giáo viên dán đường dẫn mô phỏng đã tạo bằng Gemini Canvas, Scratch, PhET hoặc nền tảng tương tác khác.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setInteractiveSimulations([
-                      ...interactiveSimulations,
-                      {
-                        id: 'sim_' + Date.now(),
-                        title: 'Mô phỏng tương tác mới',
-                        url: '',
-                        platform: 'gemini_canvas',
-                        instructions: 'Học sinh nhấn để thực hành trực tiếp.',
-                      },
-                    ])
-                  }
-                  className="px-3.5 py-1.5 bg-emerald-600 text-white rounded-xl font-bold flex items-center gap-1 shadow-xs"
-                >
-                  <Plus className="w-3.5 h-3.5" /> + Thêm mô phỏng
-                </button>
-              </div>
-
-              {interactiveSimulations.map((sim, idx) => (
-                <div key={sim.id} className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-2xl space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-black text-emerald-800 flex items-center gap-1.5">
-                      <Gamepad2 className="w-4 h-4 text-emerald-600" />
-                      <span>Bài mô phỏng {idx + 1}</span>
-                    </span>
-                    <button
-                      onClick={() => setInteractiveSimulations(interactiveSimulations.filter((_, i) => i !== idx))}
-                      className="text-rose-500 hover:text-rose-700 p-1"
-                      title="Xóa mô phỏng này"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="sm:col-span-2">
-                      <label className="block font-bold mb-1">Tên mô phỏng:</label>
-                      <input
-                        type="text"
-                        value={sim.title}
-                        onChange={(e) => {
-                          const updated = [...interactiveSimulations];
-                          updated[idx].title = e.target.value;
-                          setInteractiveSimulations(updated);
-                        }}
-                        placeholder="Ví dụ: Mô phỏng luyện chuột / Scratch / Canvas..."
-                        className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-bold"
-                      />
+                      <p className="text-slate-500 text-[11px]">
+                        Giáo viên dán đường dẫn mô phỏng đã tạo bằng Gemini Canvas, Scratch, PhET hoặc nền tảng tương tác khác.
+                      </p>
                     </div>
-                    <div>
-                      <label className="block font-bold mb-1">Nền tảng tạo:</label>
-                      <select
-                        value={sim.platform || 'gemini_canvas'}
-                        onChange={(e) => {
-                          const updated = [...interactiveSimulations];
-                          updated[idx].platform = e.target.value as any;
-                          setInteractiveSimulations(updated);
-                        }}
-                        className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-bold"
-                      >
-                        <option value="gemini_canvas">Gemini Canvas</option>
-                        <option value="scratch">Scratch MIT</option>
-                        <option value="phet">PhET Interactive</option>
-                        <option value="other">Nền tảng khác</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold mb-1">Đường dẫn mô phỏng (URL):</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={sim.url}
-                        onChange={(e) => {
-                          const updated = [...interactiveSimulations];
-                          updated[idx].url = e.target.value;
-                          setInteractiveSimulations(updated);
-                        }}
-                        placeholder="https://..."
-                        className="flex-1 px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-mono text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (sim.url) {
-                            setSimPreviewUrl(sim.url);
-                          } else {
-                            alert('Vui lòng nhập đường dẫn URL để xem trước!');
-                          }
-                        }}
-                        className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center gap-1 shrink-0"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Xem trước</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold mb-1">Hướng dẫn thực hành:</label>
-                    <input
-                      type="text"
-                      value={sim.instructions || ''}
-                      onChange={(e) => {
-                        const updated = [...interactiveSimulations];
-                        updated[idx].instructions = e.target.value;
-                        setInteractiveSimulations(updated);
-                      }}
-                      placeholder="Hướng dẫn học sinh các bước làm bài thực hành..."
-                      className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300"
-                    />
-                  </div>
-                </div>
-              ))}
-
-              {/* Preview Modal for Simulation */}
-              {simPreviewUrl && (
-                <div className="p-4 bg-slate-900 rounded-2xl border-2 border-emerald-400 text-white space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-black text-emerald-400">⚡ Xem trước mô phỏng:</span>
-                    <button
-                      onClick={() => setSimPreviewUrl(null)}
-                      className="text-slate-400 hover:text-white font-bold"
-                    >
-                      Đóng xem trước [✕]
-                    </button>
-                  </div>
-                  <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-slate-700">
-                    <iframe
-                      src={simPreviewUrl}
-                      title="Simulation Preview"
-                      className="w-full h-full"
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-              {/* MỤC 2: SƠ ĐỒ TƯ DUY KIẾN THỨC */}
-              {(simMindmapEditorSubTab === 'all' || simMindmapEditorSubTab === 'mindmap') && (
-                <div className="space-y-6 pt-2">
-                  <div className="flex items-center gap-2 pb-1 border-b border-purple-200">
-                    <span className="text-sm font-black text-purple-900 flex items-center gap-1.5">
-                      <ImageIcon className="w-4 h-4 text-purple-600" />
-                      <span>2. Sơ Đồ Tư Duy Kiến Thức SGK</span>
-                    </span>
-                  </div>
-
-                  {/* Mục 2.1: Tải ảnh sơ đồ tư duy */}
-                  <div className="p-4 bg-purple-50/50 border border-purple-200 rounded-2xl space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h4 className="text-sm font-black text-purple-900 flex items-center gap-1.5">
-                      <ImageIcon className="w-4 h-4 text-purple-600" />
-                      <span>Hình Ảnh Sơ Đồ Tư Duy ({mindMapImages.length} ảnh)</span>
-                    </h4>
-                    <p className="text-slate-500 text-[11px]">
-                      Hỗ trợ tải lên từ máy tính (PNG, JPG, JPEG, WEBP) hoặc dán link ảnh trực tuyến. Học sinh có thể phóng to, thu nhỏ và xem toàn màn hình.
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => {
-                        const url = prompt('Nhập đường dẫn URL ảnh sơ đồ tư duy (PNG, JPG, WEBP):');
-                        if (url && url.trim()) {
-                          setMindMapImages([
-                            ...mindMapImages,
-                            {
-                              id: 'mm_img_' + Date.now(),
-                              title: 'Sơ đồ tư duy trực quan',
-                              imageUrl: url.trim(),
-                              caption: 'Sơ đồ kiến thức trọng tâm',
-                            },
-                          ]);
-                        }
-                      }}
-                      className="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer text-xs transition"
+                      onClick={() =>
+                        setInteractiveSimulations([
+                          ...interactiveSimulations,
+                          {
+                            id: 'sim_' + Date.now(),
+                            title: 'Mô phỏng tương tác mới',
+                            url: '',
+                            platform: 'gemini_canvas',
+                            instructions: 'Học sinh nhấn để thực hành trực tiếp.',
+                          },
+                        ])
+                      }
+                      className="px-3.5 py-1.5 bg-emerald-600 text-white rounded-xl font-bold flex items-center gap-1 shadow-xs"
                     >
-                      <LinkIcon className="w-3.5 h-3.5" />
-                      <span>Thêm bằng URL ảnh</span>
+                      <Plus className="w-3.5 h-3.5" /> + Thêm mô phỏng
                     </button>
-
-                    <label className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs text-xs">
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>Tải ảnh từ máy tính</span>
-                      <input
-                        type="file"
-                        accept=".png,.jpg,.jpeg,.webp"
-                        onChange={handleUploadMindMapImage}
-                        className="hidden"
-                      />
-                    </label>
                   </div>
-                </div>
 
-                {/* List of uploaded Mind Map Images */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                  {mindMapImages.map((img, idx) => (
-                    <div key={img.id} className="p-3 bg-white border border-purple-200 rounded-xl space-y-2.5 shadow-xs">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="font-black text-purple-800">Sơ đồ ảnh #{idx + 1}</span>
-                        <div className="flex items-center gap-2">
-                          <label className="text-[11px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-lg cursor-pointer flex items-center gap-1 border border-purple-200 transition">
-                            <Upload className="w-3 h-3" />
-                            <span>Thay ảnh</span>
-                            <input
-                              type="file"
-                              accept=".png,.jpg,.jpeg,.webp"
-                              onChange={(e) => handleReplaceMindMapImage(idx, e)}
-                              className="hidden"
-                            />
-                          </label>
+                  {interactiveSimulations.map((sim, idx) => (
+                    <div key={sim.id} className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-2xl space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-black text-emerald-800 flex items-center gap-1.5">
+                          <Gamepad2 className="w-4 h-4 text-emerald-600" />
+                          <span>Bài mô phỏng {idx + 1}</span>
+                        </span>
+                        <button
+                          onClick={() => setInteractiveSimulations(interactiveSimulations.filter((_, i) => i !== idx))}
+                          className="text-rose-500 hover:text-rose-700 p-1"
+                          title="Xóa mô phỏng này"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold mb-1">Tên mô phỏng:</label>
+                          <input
+                            type="text"
+                            value={sim.title}
+                            onChange={(e) => {
+                              const updated = [...interactiveSimulations];
+                              updated[idx].title = e.target.value;
+                              setInteractiveSimulations(updated);
+                            }}
+                            placeholder="Ví dụ: Mô phỏng luyện chuột / Scratch / Canvas..."
+                            className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-bold mb-1">Nền tảng tạo:</label>
+                          <select
+                            value={sim.platform || 'gemini_canvas'}
+                            onChange={(e) => {
+                              const updated = [...interactiveSimulations];
+                              updated[idx].platform = e.target.value as any;
+                              setInteractiveSimulations(updated);
+                            }}
+                            className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-bold"
+                          >
+                            <option value="gemini_canvas">Gemini Canvas</option>
+                            <option value="scratch">Scratch MIT</option>
+                            <option value="phet">PhET Interactive</option>
+                            <option value="other">Nền tảng khác</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold mb-1">Đường dẫn mô phỏng (URL):</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={sim.url}
+                            onChange={(e) => {
+                              const updated = [...interactiveSimulations];
+                              updated[idx].url = e.target.value;
+                              setInteractiveSimulations(updated);
+                            }}
+                            placeholder="https://..."
+                            className="flex-1 px-3 py-1.5 bg-white rounded-xl border border-slate-300 font-mono text-xs"
+                          />
                           <button
                             type="button"
-                            onClick={() => setMindMapImages(mindMapImages.filter((_, i) => i !== idx))}
-                            className="text-rose-500 hover:text-rose-700 p-1 rounded-lg hover:bg-rose-50 cursor-pointer"
-                            title="Xóa sơ đồ này"
+                            onClick={() => {
+                              if (sim.url) {
+                                setSimPreviewUrl(sim.url);
+                              } else {
+                                alert('Vui lòng nhập đường dẫn URL để xem trước!');
+                              }
+                            }}
+                            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center gap-1 shrink-0"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Xem trước</span>
                           </button>
                         </div>
                       </div>
 
-                      <div className="h-36 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center relative group">
-                        <img
-                          src={img.imageUrl}
-                          alt={img.title}
-                          className="w-full h-full object-contain bg-white"
-                        />
-                      </div>
-
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Tiêu đề sơ đồ:</label>
+                        <label className="block font-bold mb-1">Hướng dẫn thực hành:</label>
                         <input
                           type="text"
-                          value={img.title}
+                          value={sim.instructions || ''}
                           onChange={(e) => {
-                            const updated = [...mindMapImages];
-                            updated[idx].title = e.target.value;
-                            setMindMapImages(updated);
+                            const updated = [...interactiveSimulations];
+                            updated[idx].instructions = e.target.value;
+                            setInteractiveSimulations(updated);
                           }}
-                          className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-semibold"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Chú thích:</label>
-                        <input
-                          type="text"
-                          value={img.caption || ''}
-                          onChange={(e) => {
-                            const updated = [...mindMapImages];
-                            updated[idx].caption = e.target.value;
-                            setMindMapImages(updated);
-                          }}
-                          placeholder="Mô tả nội dung sơ đồ tư duy..."
-                          className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-xs"
+                          placeholder="Hướng dẫn học sinh các bước làm bài thực hành..."
+                          className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-300"
                         />
                       </div>
                     </div>
                   ))}
+
+                  {/* Preview Modal for Simulation */}
+                  {simPreviewUrl && (
+                    <div className="p-4 bg-slate-900 rounded-2xl border-2 border-emerald-400 text-white space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-black text-emerald-400">⚡ Xem trước mô phỏng:</span>
+                        <button
+                          onClick={() => setSimPreviewUrl(null)}
+                          className="text-slate-400 hover:text-white font-bold"
+                        >
+                          Đóng xem trước [✕]
+                        </button>
+                      </div>
+                      <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-slate-700">
+                        <iframe
+                          src={simPreviewUrl}
+                          title="Simulation Preview"
+                          className="w-full h-full"
+                          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              {/* Mục 2: Gắn Link Sơ Đồ Tư Duy Tương Tác Từ Web Khác */}
-              <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h4 className="text-sm font-black text-blue-900 flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-blue-600" />
-                      <span>Gắn Link Sơ Đồ Tư Duy Tương Tác Từ Web Khác</span>
-                    </h4>
-                    <p className="text-slate-500 text-[11px] mt-0.5">
-                      Gắn đường link sơ đồ tư duy tương tác trực tuyến từ Coggle.it, MindMeister, Miro, GitMind, Canva, Whimsical... Học sinh có thể tương tác trực tiếp hoặc mở toàn màn hình.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Đường dẫn URL sơ đồ tư duy tương tác:
-                    </label>
-                    <input
-                      type="url"
-                      value={externalMindMapUrl}
-                      onChange={(e) => setExternalMindMapUrl(e.target.value)}
-                      placeholder="https://coggle.it/diagram/... hoặc https://www.mindmeister.com/..."
-                      className="w-full px-3 py-1.5 bg-white rounded-xl border border-blue-200 text-xs font-semibold"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Tên hiển thị sơ đồ (Tùy chọn):
-                    </label>
-                    <input
-                      type="text"
-                      value={externalMindMapTitle}
-                      onChange={(e) => setExternalMindMapTitle(e.target.value)}
-                      placeholder="Ví dụ: Sơ đồ tương tác Coggle: Các bộ phận máy tính"
-                      className="w-full px-3 py-1.5 bg-white rounded-xl border border-blue-200 text-xs font-semibold"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-blue-100">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-blue-900">
-                    <input
-                      type="checkbox"
-                      checked={allowMindMapEmbed}
-                      onChange={(e) => setAllowMindMapEmbed(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 rounded"
-                    />
-                    <span>Cho phép nhúng xem và tương tác trực tiếp trên trang bài giảng (qua iframe)</span>
-                  </label>
-
-                  <div className="flex items-center gap-1.5 text-[10px]">
-                    <span className="text-slate-400 font-bold">Mẫu link tham khảo:</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setExternalMindMapUrl('https://coggle.it/diagram/Zg1m2_demo/t/may-tinh-va-em');
-                        setExternalMindMapTitle('Sơ đồ tư duy Coggle: Kiến thức Tin học');
-                      }}
-                      className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
-                    >
-                      Coggle.it
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setExternalMindMapUrl('https://www.mindmeister.com/maps/public_map_shell/demo');
-                        setExternalMindMapTitle('Sơ đồ MindMeister: Hệ thống kiến thức');
-                      }}
-                      className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
-                    >
-                      MindMeister
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setExternalMindMapUrl('https://miro.com/app/live-embed/demo');
-                        setExternalMindMapTitle('Bảng sơ đồ tương tác Miro');
-                      }}
-                      className="px-2 py-0.5 bg-white hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 font-bold cursor-pointer transition"
-                    >
-                      Miro
-                    </button>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           )}
-        </div>
-      )}
 
           {/* TAB D: TRÒ CHƠI KIỂM TRA, ĐÁNH GIÁ */}
           {activeTab === 'games' && (

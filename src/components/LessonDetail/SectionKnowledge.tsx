@@ -1,6 +1,6 @@
 import React from 'react';
 import { KnowledgeCard } from '../../types';
-import { BookOpen, Sparkles, FileText, Video, ExternalLink, Laptop } from 'lucide-react';
+import { FileText, Video, Laptop } from 'lucide-react';
 
 interface Props {
   cards: KnowledgeCard[];
@@ -82,16 +82,6 @@ export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
                 )}
               </div>
 
-              {/* Key Takeaway Badge (Ghi nhớ nhanh) */}
-              {card.keyMemory && (
-                <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-100 rounded-2xl border-2 border-amber-300 flex items-center gap-3 text-amber-900 font-black text-sm shadow-xs">
-                  <Sparkles className="w-6 h-6 text-amber-500 shrink-0 animate-bounce" />
-                  <span>
-                    <strong className="text-amber-800 uppercase tracking-wide mr-1">🌟 Ghi nhớ nhanh:</strong>{' '}
-                    {card.keyMemory}
-                  </span>
-                </div>
-              )}
 
               {/* Attachments if any (PDF, Video link) */}
               {(card.pdfUrl || card.videoUrl) && (
