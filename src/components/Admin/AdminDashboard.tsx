@@ -785,22 +785,8 @@ export const AdminDashboard: React.FC<Props> = ({
       </div>
 
       {/* Admin Dashboard Footer */}
-      <footer className="mt-16 bg-white border-t-2 border-slate-200 pt-8 pb-16 text-center text-xs text-slate-500 font-semibold">
-        <div className="max-w-7xl mx-auto px-4 space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
-              <span>⚙️ BẢNG ĐIỀU KHIỂN QUẢN TRỊ VIÊN &amp; GIÁO VIÊN</span>
-              <span className="text-amber-500">•</span>
-              <span className="text-slate-600 font-medium">Học Liệu Tin Học Kết Nối Tri Thức</span>
-            </div>
-            <button
-              onClick={() => onExitAdmin()}
-              className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer transition border border-slate-300"
-            >
-              ← Trở về giao diện học sinh
-            </button>
-          </div>
-
+      <footer className="mt-16 bg-white border-t-2 border-slate-200 pt-6 pb-16 text-center text-xs text-slate-500 font-semibold">
+        <div className="max-w-7xl mx-auto px-4">
           {/* Hộp Bản quyền & Tác giả thiết kế */}
           <div className="p-4 bg-gradient-to-r from-slate-50 via-amber-50/50 to-slate-50 rounded-2xl border-2 border-slate-200 text-slate-700 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
             <div className="font-bold text-xs flex items-center gap-1.5 text-slate-800">

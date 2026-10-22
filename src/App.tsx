@@ -776,47 +776,8 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-16 bg-white border-t-2 border-slate-200 pt-8 pb-32 sm:pb-28 text-center text-xs text-slate-500 font-semibold">
-        <div className="max-w-7xl mx-auto px-4 space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
-              <span>💻 HỌC LIỆU TIN HỌC KẾT NỐI TRI THỨC 3-4-5</span>
-              <span className="text-amber-500">•</span>
-              <span className="text-slate-600 font-medium">Học vui – Nhớ lâu – Thực hành sáng tạo</span>
-            </div>
-            <div className="flex items-center gap-3">
-              {currentUser ? (
-                <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-                  <span>{currentUser.avatar}</span>
-                  <span>{currentUser.fullName}</span>
-                </span>
-              ) : (
-                <button
-                  onClick={() => {
-                    setLoginModalRole('student');
-                    setIsLoginModalOpen(true);
-                  }}
-                  className="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold cursor-pointer transition border border-blue-200"
-                >
-                  Đăng nhập tài khoản
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  if (currentUser && (currentUser.role === 'teacher' || currentUser.role === 'admin')) {
-                    setIsLoggedInAdmin(true);
-                  } else {
-                    setLoginModalRole('teacher');
-                    setIsLoginModalOpen(true);
-                  }
-                }}
-                className="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold cursor-pointer transition border border-indigo-200"
-              >
-                Quản trị giáo viên ⚙️
-              </button>
-            </div>
-          </div>
-
+      <footer className="mt-16 bg-white border-t-2 border-slate-200 pt-6 pb-32 sm:pb-28 text-center text-xs text-slate-500 font-semibold">
+        <div className="max-w-7xl mx-auto px-4">
           {/* Hộp Bản quyền & Tác giả thiết kế */}
           <div className="p-4 bg-gradient-to-r from-slate-50 via-amber-50/50 to-slate-50 rounded-2xl border-2 border-slate-200 text-slate-700 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
             <div className="font-bold text-xs flex items-center gap-1.5 text-slate-800">
