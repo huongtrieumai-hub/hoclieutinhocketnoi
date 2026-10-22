@@ -777,42 +777,51 @@ export default function App() {
 
       {/* Footer */}
       <footer className="mt-12 bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 font-semibold">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 font-bold text-slate-700">
-            <span>💻 HỌC LIỆU TIN HỌC KẾT NỐI TRI THỨC 3-4-5</span>
-            <span className="text-amber-500">•</span>
-            <span>Học vui – Nhớ lâu – Thực hành sáng tạo</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {currentUser ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">
-                <span>{currentUser.avatar}</span>
-                <span>{currentUser.fullName}</span>
-              </span>
-            ) : (
+        <div className="max-w-7xl mx-auto px-4 space-y-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5 font-bold text-slate-700">
+              <span>💻 HỌC LIỆU TIN HỌC KẾT NỐI TRI THỨC 3-4-5</span>
+              <span className="text-amber-500">•</span>
+              <span>Học vui – Nhớ lâu – Thực hành sáng tạo</span>
+            </div>
+            <div className="flex items-center gap-3">
+              {currentUser ? (
+                <span className="text-emerald-700 font-bold flex items-center gap-1">
+                  <span>{currentUser.avatar}</span>
+                  <span>{currentUser.fullName}</span>
+                </span>
+              ) : (
+                <button
+                  onClick={() => {
+                    setLoginModalRole('student');
+                    setIsLoginModalOpen(true);
+                  }}
+                  className="text-blue-600 hover:underline font-bold cursor-pointer"
+                >
+                  Đăng nhập tài khoản
+                </button>
+              )}
               <button
                 onClick={() => {
-                  setLoginModalRole('student');
-                  setIsLoginModalOpen(true);
+                  if (currentUser && (currentUser.role === 'teacher' || currentUser.role === 'admin')) {
+                    setIsLoggedInAdmin(true);
+                  } else {
+                    setLoginModalRole('teacher');
+                    setIsLoginModalOpen(true);
+                  }
                 }}
-                className="text-blue-600 hover:underline font-bold"
+                className="text-indigo-600 hover:underline font-bold cursor-pointer"
               >
-                Đăng nhập tài khoản
+                Quản trị giáo viên
               </button>
-            )}
-            <button
-              onClick={() => {
-                if (currentUser && (currentUser.role === 'teacher' || currentUser.role === 'admin')) {
-                  setIsLoggedInAdmin(true);
-                } else {
-                  setLoginModalRole('teacher');
-                  setIsLoginModalOpen(true);
-                }
-              }}
-              className="text-indigo-600 hover:underline font-bold"
-            >
-              Quản trị giáo viên
-            </button>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <p>© 2026 Học Liệu Tin Học Kết Nối. Bản quyền thuộc về tác giả.</p>
+            <p className="text-slate-600 font-semibold">
+              Giao diện &amp; Nội dung thiết kế bởi <span className="text-amber-600 font-bold">Triệu Mai Hường</span>.
+            </p>
           </div>
         </div>
       </footer>

@@ -784,6 +784,16 @@ export const AdminDashboard: React.FC<Props> = ({
         )}
       </div>
 
+      {/* Admin Dashboard Footer */}
+      <footer className="mt-16 bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 font-semibold">
+        <div className="max-w-7xl mx-auto px-4 space-y-1.5">
+          <p>© 2026 Học Liệu Tin Học Kết Nối. Bản quyền thuộc về tác giả.</p>
+          <p className="text-slate-600 font-semibold">
+            Giao diện &amp; Nội dung thiết kế bởi <span className="text-amber-600 font-bold">Triệu Mai Hường</span>.
+          </p>
+        </div>
+      </footer>
+
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (() => {
         const targetLesson = lessons.find((l) => l.id === deleteConfirmId);
