@@ -776,17 +776,17 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 font-semibold">
-        <div className="max-w-7xl mx-auto px-4 space-y-3">
+      <footer className="mt-16 bg-white border-t-2 border-slate-200 pt-8 pb-32 sm:pb-28 text-center text-xs text-slate-500 font-semibold">
+        <div className="max-w-7xl mx-auto px-4 space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 font-bold text-slate-700">
+            <div className="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
               <span>💻 HỌC LIỆU TIN HỌC KẾT NỐI TRI THỨC 3-4-5</span>
               <span className="text-amber-500">•</span>
-              <span>Học vui – Nhớ lâu – Thực hành sáng tạo</span>
+              <span className="text-slate-600 font-medium">Học vui – Nhớ lâu – Thực hành sáng tạo</span>
             </div>
             <div className="flex items-center gap-3">
               {currentUser ? (
-                <span className="text-emerald-700 font-bold flex items-center gap-1">
+                <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
                   <span>{currentUser.avatar}</span>
                   <span>{currentUser.fullName}</span>
                 </span>
@@ -796,7 +796,7 @@ export default function App() {
                     setLoginModalRole('student');
                     setIsLoginModalOpen(true);
                   }}
-                  className="text-blue-600 hover:underline font-bold cursor-pointer"
+                  className="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold cursor-pointer transition border border-blue-200"
                 >
                   Đăng nhập tài khoản
                 </button>
@@ -810,18 +810,22 @@ export default function App() {
                     setIsLoginModalOpen(true);
                   }
                 }}
-                className="text-indigo-600 hover:underline font-bold cursor-pointer"
+                className="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold cursor-pointer transition border border-indigo-200"
               >
-                Quản trị giáo viên
+                Quản trị giáo viên ⚙️
               </button>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-            <p>© 2026 Học Liệu Tin Học Kết Nối. Bản quyền thuộc về tác giả.</p>
-            <p className="text-slate-600 font-semibold">
-              Giao diện &amp; Nội dung thiết kế bởi <span className="text-amber-600 font-bold">Triệu Mai Hường</span>.
-            </p>
+          {/* Hộp Bản quyền & Tác giả thiết kế */}
+          <div className="p-4 bg-gradient-to-r from-slate-50 via-amber-50/50 to-slate-50 rounded-2xl border-2 border-slate-200 text-slate-700 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
+            <div className="font-bold text-xs flex items-center gap-1.5 text-slate-800">
+              <span className="text-base">📜</span>
+              <span>© 2026 Học Liệu Tin Học Kết Nối. Bản quyền thuộc về tác giả.</span>
+            </div>
+            <div className="text-xs font-bold text-slate-700">
+              Giao diện &amp; Nội dung thiết kế bởi <span className="text-amber-700 font-black underline decoration-amber-400 decoration-2 underline-offset-2">Triệu Mai Hường</span>.
+            </div>
           </div>
         </div>
       </footer>
