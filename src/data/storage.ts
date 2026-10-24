@@ -2,6 +2,7 @@ import { Lesson, Topic, StudentScoreRecord, UserProgress, StudySessionRecord, St
 import { INITIAL_LESSONS, INITIAL_TOPICS } from './mockData';
 import { INITIAL_STUDY_SESSIONS, INITIAL_LEARNERS_SUMMARY } from './mockStudySessions';
 import { FirestoreService } from '../services/firestoreService';
+import { formatSentenceBreaks } from '../utils/textFormatter';
 
 const STORAGE_KEYS = {
   LESSONS: 'hoc_lieu_tin_hoc_lessons_v1',
@@ -47,6 +48,15 @@ export const StorageService = {
 
           if (!updatedLesson.requiredWatchSeconds) {
             updatedLesson.requiredWatchSeconds = init?.requiredWatchSeconds || 180;
+          }
+
+          // Format knowledge card lines so each sentence after a period has a clean line break
+          if (updatedLesson.section2Knowledge?.cards) {
+            updatedLesson.section2Knowledge.cards = updatedLesson.section2Knowledge.cards.map((c) => ({
+              ...c,
+              details: formatSentenceBreaks(c.details || c.summary),
+              summary: formatSentenceBreaks(c.summary || c.details),
+            }));
           }
 
           return updatedLesson;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { KnowledgeCard } from '../../types';
 import { FileText, Video, Laptop } from 'lucide-react';
+import { splitSentencesToLines } from '../../utils/textFormatter';
 
 interface Props {
   cards: KnowledgeCard[];
@@ -66,9 +67,23 @@ export const SectionKnowledge: React.FC<Props> = ({ cards, objectives }) => {
               {/* Knowledge Details & Image grid */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 my-6 items-center">
                 <div className={card.imageUrl ? 'md:col-span-7' : 'md:col-span-12'}>
-                  <p className="text-base text-slate-700 font-bold leading-relaxed">
-                    {card.details || card.summary}
-                  </p>
+                  <div className="space-y-3 text-base text-slate-800 font-bold leading-relaxed">
+                    {splitSentencesToLines(card.details || card.summary).map((line, lineIdx) => {
+                      const isBullet = line.startsWith('-') || line.startsWith('•');
+                      return (
+                        <p
+                          key={lineIdx}
+                          className={`leading-relaxed ${
+                            isBullet
+                              ? 'text-slate-800 font-bold pl-1.5'
+                              : 'text-slate-700 font-bold'
+                          }`}
+                        >
+                          {line}
+                        </p>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {card.imageUrl && (

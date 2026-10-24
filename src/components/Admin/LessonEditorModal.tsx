@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { CloudinaryService } from '../../services/cloudinaryService';
 import { INITIAL_TOPICS } from '../../data/mockData';
+import { formatSentenceBreaks } from '../../utils/textFormatter';
 import {
   Lesson,
   Topic,
@@ -242,7 +243,12 @@ export const LessonEditorModal: React.FC<Props> = ({
       },
 
       section2Knowledge: {
-        cards,
+        cards: cards.map((c) => ({
+          ...c,
+          title: c.title.trim(),
+          details: formatSentenceBreaks(c.details || c.summary),
+          summary: formatSentenceBreaks(c.summary || c.details),
+        })),
       },
 
       section3MindMap: {
@@ -567,9 +573,25 @@ export const LessonEditorModal: React.FC<Props> = ({
                       />
                     </div>
                     <div>
-                      <label className="block font-bold mb-1">Nội dung kiến thức &amp; Giải thích chi tiết:</label>
+                      <div className="flex items-center justify-between font-bold mb-1">
+                        <label className="text-xs text-slate-700">Nội dung kiến thức &amp; Giải thích chi tiết:</label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...cards];
+                            const formatted = formatSentenceBreaks(updated[idx].details || updated[idx].summary);
+                            updated[idx].details = formatted;
+                            updated[idx].summary = formatted;
+                            setCards(updated);
+                          }}
+                          className="text-[11px] text-blue-600 hover:text-blue-800 font-bold bg-blue-50 hover:bg-blue-100 px-2.5 py-0.5 rounded-lg border border-blue-200 flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                          title="Tự động chia mỗi câu sau dấu chấm thành một dòng riêng biệt"
+                        >
+                          <span>⚡ Xuống dòng sau dấu chấm</span>
+                        </button>
+                      </div>
                       <textarea
-                        rows={3}
+                        rows={5}
                         value={c.details || c.summary}
                         onChange={(e) => {
                           const updated = [...cards];
@@ -577,9 +599,12 @@ export const LessonEditorModal: React.FC<Props> = ({
                           updated[idx].summary = e.target.value;
                           setCards(updated);
                         }}
-                        className="w-full px-3 py-1.5 bg-white rounded-xl border border-slate-200"
-                        placeholder="Nội dung kiến thức trọng tâm cho học sinh..."
+                        className="w-full px-3 py-2 bg-white rounded-xl border border-slate-200 text-xs leading-relaxed font-medium"
+                        placeholder="Nội dung kiến thức trọng tâm cho học sinh (Mỗi câu sau dấu chấm sẽ tự động xuống dòng)..."
                       />
+                      <p className="text-[10px] text-slate-500 italic mt-0.5">
+                        💡 Mỗi câu sau dấu chấm hoặc dấu gạch đầu dòng (-) sẽ tự động xuống dòng đẹp mắt khi học sinh học bài.
+                      </p>
                     </div>
                   </div>
                 ))}
