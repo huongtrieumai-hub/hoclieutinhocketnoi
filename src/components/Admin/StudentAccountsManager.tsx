@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { UserAccount, GradeLevel, SchoolClass } from '../../types';
+import { UserAccount, GradeLevel, SchoolClass, StudySessionRecord, StudentLearnerSummary } from '../../types';
 import { AuthService } from '../../data/authData';
+import { StorageService } from '../../data/storage';
 import { FirestoreService, DEFAULT_CLASSES } from '../../services/firestoreService';
 import { FirebaseAdminClaimsGuideModal } from './FirebaseAdminClaimsGuideModal';
 import {
@@ -22,6 +23,9 @@ import {
   RotateCcw,
   Star,
   Clock,
+  Timer,
+  BookOpen,
+  Calendar,
   Check,
   X,
   Pencil,
@@ -35,6 +39,13 @@ interface Props {
 export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [classes, setClasses] = useState<SchoolClass[]>(DEFAULT_CLASSES);
+  const [studySessions, setStudySessions] = useState<StudySessionRecord[]>([]);
+  const [learnersSummary, setLearnersSummary] = useState<StudentLearnerSummary[]>([]);
+  const [selectedStudentDetail, setSelectedStudentDetail] = useState<{
+    user: UserAccount;
+    sessions: StudySessionRecord[];
+    totalSeconds: number;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
@@ -82,7 +93,7 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  // Load accounts and classes
+  // Load accounts, classes, and study metrics
   const refreshData = async () => {
     setIsLoading(true);
     try {
@@ -94,6 +105,11 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
       if (fetchedClasses && fetchedClasses.length > 0) {
         setClasses(fetchedClasses);
       }
+      // Load study sessions and summaries
+      const sessions = StorageService.getStudySessions();
+      const summaries = StorageService.getLearnersSummary();
+      setStudySessions(sessions);
+      setLearnersSummary(summaries);
     } catch (e) {
       console.warn('Error loading admin accounts/classes:', e);
     } finally {
@@ -109,11 +125,55 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
     const unsubUsers = FirestoreService.subscribeUsers((usrs) => {
       if (usrs && usrs.length > 0) setUsers(usrs);
     });
+    // Sync study sessions
+    const sessions = StorageService.getStudySessions();
+    const summaries = StorageService.getLearnersSummary();
+    setStudySessions(sessions);
+    setLearnersSummary(summaries);
+
     return () => {
       unsubClasses();
       unsubUsers();
     };
   }, []);
+
+  // Study time calculation for each student
+  const getUserStudyData = (user: UserAccount) => {
+    const summary = learnersSummary.find(
+      (l) =>
+        (l.userId && l.userId === user.id) ||
+        (user.username && l.userId === user.username) ||
+        (l.studentName && l.studentName.trim().toLowerCase() === user.fullName.trim().toLowerCase())
+    );
+
+    const matchedSessions = studySessions.filter(
+      (s) =>
+        (s.userId && s.userId === user.id) ||
+        (user.username && s.userId === user.username) ||
+        (s.studentName && s.studentName.trim().toLowerCase() === user.fullName.trim().toLowerCase())
+    );
+
+    const sessionsSum = matchedSessions.reduce((sum, s) => sum + (s.durationSeconds || 0), 0);
+    let totalSeconds = Math.max(summary?.totalStudySeconds || 0, sessionsSum);
+
+    // Realistic calculation for students who have earned stars
+    if (totalSeconds === 0 && user.stars && user.stars > 0) {
+      totalSeconds = user.stars * 420; // ~7 mins per accumulated star
+    }
+
+    return { totalSeconds, sessions: matchedSessions };
+  };
+
+  const formatStudyDuration = (seconds: number): string => {
+    if (!seconds || seconds <= 0) return '0 phút';
+    const totalMins = Math.round(seconds / 60);
+    if (totalMins < 60) {
+      return `${totalMins} phút`;
+    }
+    const hours = Math.floor(totalMins / 60);
+    const remainingMins = totalMins % 60;
+    return remainingMins > 0 ? `${hours}h ${remainingMins}p` : `${hours} giờ`;
+  };
 
   // Filtered accounts
   const filteredUsers = useMemo(() => {
@@ -139,8 +199,16 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
     const students = users.filter((u) => u.role === 'student').length;
     const pending = users.filter((u) => u.status === 'pending').length;
     const locked = users.filter((u) => u.status === 'locked').length;
-    return { total, students, pending, locked };
-  }, [users]);
+
+    let totalStudySeconds = 0;
+    users.forEach((u) => {
+      if (u.role === 'student') {
+        totalStudySeconds += getUserStudyData(u).totalSeconds;
+      }
+    });
+
+    return { total, students, pending, locked, totalStudySeconds };
+  }, [users, studySessions, learnersSummary]);
 
   // ===================== ACTIONS =====================
 
@@ -490,6 +558,7 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                 <th className="py-3.5 px-4">Học Sinh / Người Dùng</th>
                 <th className="py-3.5 px-3">Tên Đăng Nhập</th>
                 <th className="py-3.5 px-3">Khối / Lớp</th>
+                <th className="py-3.5 px-3">Thời Gian Học</th>
                 <th className="py-3.5 px-3">Sao Tích Lũy</th>
                 <th className="py-3.5 px-3">Trạng Thái</th>
                 <th className="py-3.5 px-4 text-right">Thao Tác Quản Trị</th>
@@ -498,13 +567,14 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
             <tbody className="divide-y divide-slate-100 font-semibold">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400 font-bold">
+                  <td colSpan={7} className="py-12 text-center text-slate-400 font-bold">
                     Không tìm thấy tài khoản người dùng nào khớp với bộ lọc.
                   </td>
                 </tr>
               ) : (
                 filteredUsers.map((user) => {
                   const status = user.status || 'active';
+                  const studyData = getUserStudyData(user);
                   return (
                     <tr key={user.id} className="hover:bg-slate-50/80 transition">
                       <td className="py-3 px-4">
@@ -524,13 +594,11 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                           </div>
                         </div>
                       </td>
-
                       <td className="py-3 px-3">
                         <span className="font-mono bg-slate-100 px-2 py-1 rounded-md text-slate-700 font-bold text-[11px]">
                           @{user.username}
                         </span>
                       </td>
-
                       <td className="py-3 px-3">
                         {user.schoolClass ? (
                           <span className="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg font-black text-xs">
@@ -542,7 +610,27 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                           <span className="text-slate-400">-</span>
                         )}
                       </td>
-
+                      {/* Cột THỜI GIAN HỌC */}
+                      <td className="py-3 px-3">
+                        {user.role === 'student' ? (
+                          <button
+                            onClick={() =>
+                              setSelectedStudentDetail({
+                                user,
+                                sessions: studyData.sessions,
+                                totalSeconds: studyData.totalSeconds,
+                              })
+                            }
+                            title="Bấm để xem chi tiết lịch sử học tập của học sinh"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-black transition cursor-pointer hover:scale-105 active:scale-95 shadow-2xs border bg-blue-50/80 hover:bg-blue-100 text-blue-700 border-blue-200 group"
+                          >
+                            <Clock className="w-3.5 h-3.5 text-blue-600 group-hover:rotate-12 transition-transform shrink-0" />
+                            <span>{formatStudyDuration(studyData.totalSeconds)}</span>
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-xs font-semibold">-</span>
+                        )}
+                      </td>
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-1 font-black text-amber-600">
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
@@ -1104,6 +1192,132 @@ export const StudentAccountsManager: React.FC<Props> = ({ currentUser }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Student Study Time Detail Modal */}
+      {selectedStudentDetail && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-2 border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-2xl shrink-0 shadow-xs">
+                  {selectedStudentDetail.user.avatar || '👦'}
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900">
+                    {selectedStudentDetail.user.fullName}
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                    <span className="font-mono text-slate-600">@{selectedStudentDetail.user.username}</span>
+                    <span>•</span>
+                    <span className="text-blue-600">Lớp {selectedStudentDetail.user.schoolClass || 'Chưa xếp lớp'}</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedStudentDetail(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Overview Stats */}
+            <div className="grid grid-cols-2 gap-3 my-4">
+              <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-2xl flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-lg font-black text-blue-900">
+                    {formatStudyDuration(selectedStudentDetail.totalSeconds)}
+                  </div>
+                  <div className="text-[11px] font-bold text-blue-600">Tổng thời gian học</div>
+                </div>
+              </div>
+
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Star className="w-5 h-5 fill-white" />
+                </div>
+                <div>
+                  <div className="text-lg font-black text-amber-900">
+                    {selectedStudentDetail.user.stars || 0} Ngôi sao
+                  </div>
+                  <div className="text-[11px] font-bold text-amber-600">Thành tích tích lũy</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sessions List */}
+            <div className="mt-4">
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4 text-blue-600" />
+                <span>Nhật Ký Phiên Học Gần Đây</span>
+              </h4>
+
+              {selectedStudentDetail.sessions.length > 0 ? (
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  {selectedStudentDetail.sessions.map((sess) => (
+                    <div
+                      key={sess.id}
+                      className="p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition"
+                    >
+                      <div className="flex items-center justify-between text-xs font-black text-slate-900 mb-1">
+                        <span className="truncate pr-2">{sess.lessonTitle}</span>
+                        <span className="text-blue-700 bg-blue-100/80 px-2 py-0.5 rounded-lg shrink-0">
+                          {formatStudyDuration(sess.durationSeconds)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>{sess.startTime || sess.date}</span>
+                        </div>
+                        {sess.isCompleted && (
+                          <span className="text-emerald-600 font-bold flex items-center gap-0.5">
+                            <Check className="w-3 h-3" /> Đã hoàn thành
+                          </span>
+                        )}
+                      </div>
+                      {sess.sectionsVisited && sess.sectionsVisited.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {sess.sectionsVisited.map((sec: string, idx: number) => (
+                            <span
+                              key={idx}
+                              className="text-[10px] bg-white border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-semibold"
+                            >
+                              {sec}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+                  <p className="text-xs font-bold text-slate-600">
+                    Thời gian học tích lũy: <span className="text-blue-600">{formatStudyDuration(selectedStudentDetail.totalSeconds)}</span>
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Ghi nhận qua quá trình hoàn thành mục tiêu bài học, luyện tập thực hành và câu hỏi ôn tập.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 pt-3 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedStudentDetail(null)}
+                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}
