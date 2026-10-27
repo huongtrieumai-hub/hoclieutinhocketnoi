@@ -103,20 +103,6 @@ export const SectionMaterials: React.FC<Props> = ({
             <h3 className="text-2xl font-black mt-0.5">Kho Học Liệu Trực Quan</h3>
           </div>
         </div>
-
-        {onAttemptCompleteLesson && (
-          <button
-            onClick={onAttemptCompleteLesson}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition transform hover:scale-105 cursor-pointer ${
-              isCompleted
-                ? 'bg-emerald-600 text-white'
-                : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white ring-2 ring-emerald-300'
-            }`}
-          >
-            <Award className="w-4 h-4" />
-            <span>{isCompleted ? 'Đã hoàn thành bài ⭐' : 'Hoàn thành bài học ⭐'}</span>
-          </button>
-        )}
       </div>
 
       {/* Materials List Tabs */}

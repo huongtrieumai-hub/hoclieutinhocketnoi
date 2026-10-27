@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck, Award } from 'lucide-react';
 import { VietnameseSpeechService } from '../../services/vietnameseSpeechService';
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
   keyTakeaways: string[];
   starterPrompts: string[];
   sampleDialogues: Array<{ user: string; robot: string }>;
+  onAttemptCompleteLesson?: () => void;
+  isCompleted?: boolean;
 }
 
 interface ChatMessage {
@@ -25,6 +27,8 @@ export const SectionAIAssistant: React.FC<Props> = ({
   keyTakeaways,
   starterPrompts,
   sampleDialogues,
+  onAttemptCompleteLesson,
+  isCompleted = false,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     // Initial welcome message from Robot Tin Học
@@ -164,13 +168,27 @@ export const SectionAIAssistant: React.FC<Props> = ({
           </div>
           <div>
             <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider">
-              PHẦN 6: HỎI ĐÁP CÙNG TRỢ LÝ AI
+              PHẦN 5: ROBOT TIN HỌC AI
             </span>
             <h3 className="text-2xl font-black mt-1">Robot Tin Học Thông Thái</h3>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {onAttemptCompleteLesson && (
+            <button
+              onClick={onAttemptCompleteLesson}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition transform hover:scale-105 cursor-pointer ${
+                isCompleted
+                  ? 'bg-emerald-600 text-white ring-2 ring-emerald-300'
+                  : 'bg-white text-emerald-800 hover:bg-emerald-50 ring-2 ring-white/60 shadow-lg'
+              }`}
+            >
+              <Award className="w-4 h-4 text-amber-500" />
+              <span>{isCompleted ? 'Đã hoàn thành bài ⭐' : 'Hoàn thành bài học ⭐'}</span>
+            </button>
+          )}
+
           <button
             onClick={() => setIsApiKeyModalOpen(true)}
             className="px-3.5 py-2 bg-white/20 hover:bg-white/30 text-white font-black text-xs rounded-2xl flex items-center gap-1.5 transition cursor-pointer backdrop-blur-xs shadow-xs"
