@@ -384,11 +384,12 @@ export const SectionGames: React.FC<Props> = ({
                 TRÒ CHƠI {activeExternalGame.platform.toUpperCase()}
               </span>
               <h4 className="text-xl font-black text-slate-800 mt-1">{activeExternalGame.title}</h4>
-              {activeExternalGame.instructions && (
-                <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                  {activeExternalGame.instructions}
-                </p>
-              )}
+              {activeExternalGame.instructions &&
+                !activeExternalGame.instructions.toLowerCase().includes('nối hình ảnh với đáp án đúng') && (
+                  <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                    {activeExternalGame.instructions}
+                  </p>
+                )}
             </div>
 
             <div className="flex items-center gap-2">

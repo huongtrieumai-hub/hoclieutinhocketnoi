@@ -180,7 +180,7 @@ export const LessonEditorModal: React.FC<Props> = ({
         title: 'Trò Chơi Wordwall Ôn Tập',
         platform: 'wordwall',
         url: 'https://wordwall.net/embed/78e82ef620e74e6d87e07ebbfbe90c0f?themeId=1&templateId=3&fontStackId=0',
-        instructions: 'Nối hình ảnh với đáp án đúng để đạt điểm tối đa.',
+        instructions: '',
       },
     ]
   );
@@ -1188,7 +1188,7 @@ export const LessonEditorModal: React.FC<Props> = ({
                           title: 'Trò chơi mới',
                           platform: 'wordwall',
                           url: '',
-                          instructions: 'Học sinh nhấn Bắt đầu để làm bài.',
+                          instructions: '',
                         },
                       ])
                     }

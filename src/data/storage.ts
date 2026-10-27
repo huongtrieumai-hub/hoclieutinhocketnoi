@@ -59,6 +59,14 @@ export const StorageService = {
             }));
           }
 
+          // Clean out unwanted boilerplate instructions from external games
+          if (updatedLesson.externalGames) {
+            updatedLesson.externalGames = updatedLesson.externalGames.map((g) => ({
+              ...g,
+              instructions: g.instructions?.toLowerCase().includes('nối hình ảnh với đáp án đúng') ? '' : g.instructions,
+            }));
+          }
+
           return updatedLesson;
         });
       }
