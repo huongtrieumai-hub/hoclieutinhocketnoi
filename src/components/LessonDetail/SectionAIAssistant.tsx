@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck, Award } from 'lucide-react';
+import { Bot, Send, Volume2, Sparkles, HelpCircle, Lightbulb, RefreshCw, VolumeX, Settings, Key, Check, X, ExternalLink, ShieldCheck, Award, BookOpen, Target } from 'lucide-react';
 import { VietnameseSpeechService } from '../../services/vietnameseSpeechService';
+import { KnowledgeCard } from '../../types';
+import { generateKnowledgeGroundedResponse, isQuestionOffTopic, buildOffTopicResponse } from '../../services/robotAIEngine';
 
 interface Props {
   lessonTitle: string;
@@ -9,6 +11,8 @@ interface Props {
   keyTakeaways: string[];
   starterPrompts: string[];
   sampleDialogues: Array<{ user: string; robot: string }>;
+  objectives?: string[];
+  knowledgeCards?: KnowledgeCard[];
   onAttemptCompleteLesson?: () => void;
   isCompleted?: boolean;
 }
@@ -27,6 +31,8 @@ export const SectionAIAssistant: React.FC<Props> = ({
   keyTakeaways,
   starterPrompts,
   sampleDialogues,
+  objectives = [],
+  knowledgeCards = [],
   onAttemptCompleteLesson,
   isCompleted = false,
 }) => {
@@ -126,6 +132,8 @@ export const SectionAIAssistant: React.FC<Props> = ({
           grade,
           topic: topicName,
           keyTakeaways,
+          objectives,
+          knowledgeCards,
           mode,
           history: messages.map((m) => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text })),
           customApiKey: storedKey || undefined,
@@ -133,7 +141,18 @@ export const SectionAIAssistant: React.FC<Props> = ({
       });
 
       const data = await response.json();
-      const reply = data.reply || '🤖 Tớ đã nhận được câu hỏi của em! Hãy luôn kiên trì học hỏi nhé!';
+      let reply = data.reply;
+      if (!reply) {
+        reply = generateKnowledgeGroundedResponse(text, {
+          lessonTitle,
+          grade,
+          topicName,
+          objectives,
+          knowledgeCards,
+          keyTakeaways,
+          mode,
+        });
+      }
 
       const robotMsg: ChatMessage = {
         id: 'msg_robot_' + Date.now(),
@@ -144,13 +163,23 @@ export const SectionAIAssistant: React.FC<Props> = ({
 
       setMessages((prev) => [...prev, robotMsg]);
     } catch (err) {
-      console.error('Error contacting robot tinhoc:', err);
-      // Friendly pedagogical fallback
+      console.warn('Backend /api/robot-tinhoc error or offline, running local knowledge engine:', err);
+      // High-fidelity knowledge-grounded pedagogical engine fallback
+      const smartReply = generateKnowledgeGroundedResponse(text, {
+        lessonTitle,
+        grade,
+        topicName,
+        objectives,
+        knowledgeCards,
+        keyTakeaways,
+        mode,
+      });
+
       const fallbackMsg: ChatMessage = {
-        id: 'msg_robot_fallback_' + Date.now(),
+        id: 'msg_robot_smart_' + Date.now(),
         sender: 'robot',
-        text: `🤖 **Robot Tin Học xin gợi ý:**\nTrong bài **${lessonTitle}**, em hãy nhớ kỹ nội dung trọng tâm này nhé:\n${keyTakeaways.slice(0, 2).map((k) => `✨ ${k}`).join('\n')}\n\nEm đã hiểu phần này chưa, hay muốn Robot đố câu tiếp theo nào?`,
-        timestamp: 'Vừa xong',
+        text: smartReply,
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
@@ -167,9 +196,15 @@ export const SectionAIAssistant: React.FC<Props> = ({
             🤖
           </div>
           <div>
-            <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider">
-              PHẦN 5: ROBOT TIN HỌC AI
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-wider">
+                PHẦN 5: ROBOT TIN HỌC AI
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-700/50 border border-emerald-300/40 rounded-full text-[11px] font-bold text-white">
+                <BookOpen className="w-3 h-3 text-emerald-200" />
+                <span>Nạp lý thuyết: Mục tiêu &amp; Trọng tâm</span>
+              </span>
+            </div>
             <h3 className="text-2xl font-black mt-1">Robot Tin Học Thông Thái</h3>
           </div>
         </div>

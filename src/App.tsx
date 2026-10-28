@@ -554,6 +554,8 @@ export default function App() {
                 keyTakeaways={activeLesson.section6AIConfig.keyTakeaways}
                 starterPrompts={activeLesson.section6AIConfig.starterPrompts}
                 sampleDialogues={activeLesson.section6AIConfig.sampleDialogues}
+                objectives={activeLesson.objectives || []}
+                knowledgeCards={activeLesson.section2Knowledge?.cards || []}
                 onAttemptCompleteLesson={handleToggleComplete}
                 isCompleted={progress.completedLessons.includes(activeLesson.id)}
               />
